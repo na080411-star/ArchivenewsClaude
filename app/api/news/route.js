@@ -36,52 +36,33 @@ const newsSources = [
 ];
 
 
-// GET 함수 수정 (request 인자 추가)
-export async function GET(request) { // request 객체를 받아서 쿼리 파라미터 접근
+export async function GET() {
   const allNews = [];
-  const { searchParams } = new URL(request.url); // URL에서 searchParams 추출
 
-  // 쿼리 파라미터로 'start_date' (ISO string)와 'end_date' (ISO string)를 받을 수 있도록
-  const requestedStartDate = searchParams.get('start_date');
-  const requestedEndDate = searchParams.get('end_date');
-  
-  // 기본적으로 '최근 7일'로 설정
-  let endDate = requestedEndDate ? new Date(requestedEndDate) : new Date(); // 오늘 날짜
-  let startDate = requestedStartDate ? new Date(requestedStartDate) : new Date();
-  
-  if (!requestedStartDate) { // start_date가 없으면 end_date 기준으로 7일 전 계산
-    startDate.setDate(endDate.getDate() - 7);
-  }
-
-  // Promise.allSettled로 모든 RSS 피드 가져오기 (이전 코드와 동일, 'cache: no-store' 포함)
   const promises = newsSources.map(async (source) => {
     try {
-      const rssResponse = await fetch(source.url, { cache: 'no-store' });
+      // 🚨 이 부분이 핵심이야! 🚨
+      // rss-parser.parseURL() 대신 직접 fetch를 사용하고 캐싱 옵션을 줘.
+      const rssResponse = await fetch(source.url, { 
+        cache: 'no-store' // <--- 여기서 캐싱을 비활성화! 
+      });
+
+      // HTTP 응답이 성공적인지 확인
       if (!rssResponse.ok) {
-        throw new Error(`Failed to fetch RSS from ${source.name}: ${rssResponse.statusText}`);
+          throw new Error(`Failed to fetch RSS from ${source.name}: ${rssResponse.statusText}`);
       }
-      const rssText = await rssResponse.text();
-      const feed = await parser.parseString(rssText);
+
+      const rssText = await rssResponse.text(); // 응답을 텍스트로 읽어와
+      const feed = await parser.parseString(rssText); // 텍스트를 파싱
 
       feed.items.forEach(item => {
-        // pubDate가 유효한 날짜인지 확인
-        const itemPubDate = new Date(item.pubDate);
-        if (isNaN(itemPubDate.getTime())) { // 유효하지 않은 날짜인 경우 건너뛰기
-            return;
-        }
-
-        // 요청된 기간(start_date ~ end_date) 내의 뉴스만 추가
-        // 주의: 날짜 비교는 UTC 기준으로 하는 것이 안전함. 또는 모든 날짜를 일관된 타임존으로 변환.
-        // 여기서는 pubDate가 Timezone 포함된 string이라면 new Date()가 알아서 파싱하므로 그대로 진행.
-        if (itemPubDate >= startDate && itemPubDate <= endDate) {
-            allNews.push({
-                title: item.title,
-                link: item.link,
-                source: source.name,
-                pubDate: item.pubDate,
-                summary: item.contentSnippet,
-            });
-        }
+        allNews.push({
+          title: item.title,
+          link: item.link,
+          source: source.name,
+          pubDate: item.pubDate,
+          summary: item.contentSnippet,
+        });
       });
     } catch (error) {
       console.error(`Error fetching or parsing RSS for ${source.name}:`, error.message);
@@ -90,19 +71,5 @@ export async function GET(request) { // request 객체를 받아서 쿼리 파�
 
   await Promise.allSettled(promises);
 
-  // 날짜 기준으로 내림차순 정렬
-  allNews.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
-  
-  // 중복 제거 (선택 사항: 동일한 제목과 링크의 뉴스가 여러 소스에서 올 수 있음)
-  const uniqueNews = [];
-  const seen = new Set();
-  for (const newsItem of allNews) {
-    const identifier = `${newsItem.title}-${newsItem.link}`;
-    if (!seen.has(identifier)) {
-      uniqueNews.push(newsItem);
-      seen.add(identifier);
-    }
-  }
-
-  return NextResponse.json(uniqueNews); // 필터링 및 정렬된 고유 뉴스 반환
+  return NextResponse.json(allNews.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate)));
 }
