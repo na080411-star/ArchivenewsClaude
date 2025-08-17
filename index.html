@@ -575,13 +575,16 @@
                     const category = categorizeNews(title, cleanDescription);
 
                     if (category) {
+                        const publishDate = pubDate ? new Date(pubDate) : new Date();
+                        
                         news.push({
                             title,
                             summary: summarizeText(cleanDescription || title),
                             link,
                             source: sourceName,
-                            time: pubDate ? new Date(pubDate).toLocaleString('ko-KR') : '시간 미상',
-                            category
+                            time: toKoreanTime(publishDate),
+                            category,
+                            timestamp: publishDate.getTime()
                         });
                     }
                 }
@@ -728,13 +731,20 @@
                 document.getElementById('status-text').textContent = '샘플 뉴스 표시 중';
             }
 
-            // 각 카테고리별로 최신순 정렬 (한국시간 기준)
+            // 각 카테고리별로 최신순 정렬 (timestamp 기준)
             Object.keys(newsData).forEach(category => {
                 newsData[category].sort((a, b) => {
-                    const timeA = new Date(a.time.replace(/\./g, '/'));
-                    const timeB = new Date(b.time.replace(/\./g, '/'));
-                    return timeB.getTime() - timeA.getTime(); // 최신순 (내림차순)
+                    // timestamp가 있으면 그것을 사용, 없으면 시간 문자열 파싱
+                    const timeA = a.timestamp || parseTimeString(a.time).getTime();
+                    const timeB = b.timestamp || parseTimeString(b.time).getTime();
+                    return timeB - timeA; // 최신순 (내림차순)
                 });
+                
+                console.log(`${category} 정렬된 뉴스:`, newsData[category].map(n => ({
+                    title: n.title.substring(0, 30) + '...',
+                    time: n.time,
+                    timestamp: n.timestamp
+                })));
             });
 
             // UI 업데이트
