@@ -78,6 +78,44 @@
             backdrop-filter: blur(10px);
         }
 
+        .update-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .refresh-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .refresh-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .refresh-btn:active {
+            transform: translateY(0);
+        }
+
+        .refresh-icon {
+            font-size: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .refresh-btn:hover .refresh-icon {
+            transform: rotate(180deg);
+        }
+
         .loading-indicator {
             display: flex;
             align-items: center;
@@ -306,7 +344,13 @@
                 <div class="spinner" id="spinner"></div>
                 <span id="status-text">뉴스 로딩 중...</span>
             </div>
-            <div id="last-update">마지막 업데이트: 로딩 중...</div>
+            <div class="update-section">
+                <div id="last-update">마지막 업데이트: 로딩 중...</div>
+                <button class="refresh-btn" onclick="manualRefresh()" id="refresh-btn">
+                    <span class="refresh-icon">🔄</span>
+                    갱신
+                </button>
+            </div>
         </div>
 
         <div class="tab-container">
@@ -362,6 +406,37 @@
         };
 
         let newsData = { politics: [], economy: [], sports: [] };
+        let autoRefreshInterval;
+        function toKoreanTime(date) {
+            return new Intl.DateTimeFormat('ko-KR', {
+                timeZone: 'Asia/Seoul',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            }).format(new Date(date));
+        }
+
+        // 현재 한국 시간 가져오기
+        function getKoreanNow() {
+            return new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
+        }
+
+        // 수동 갱신 함수
+        async function manualRefresh() {
+            const refreshBtn = document.getElementById('refresh-btn');
+            refreshBtn.disabled = true;
+            refreshBtn.innerHTML = '<span class="refresh-icon" style="animation: spin 1s linear infinite;">🔄</span> 갱신중...';
+            
+            await loadAllNews();
+            
+            setTimeout(() => {
+                refreshBtn.disabled = false;
+                refreshBtn.innerHTML = '<span class="refresh-icon">🔄</span> 갱신';
+            }, 1000);
+        }
 
         // 탭 전환 함수
         function switchTab(category, tabElement) {
@@ -521,14 +596,15 @@
             // 뉴스 데이터 초기화
             newsData = { politics: [], economy: [], sports: [] };
 
-            // 더 풍부한 샘플 뉴스 데이터
+            // 더 풍부한 샘플 뉴스 데이터 (한국시간으로 생성)
+            const now = new Date();
             const sampleNews = [
                 {
                     title: "국회, 새로운 경제정책 법안 통과",
                     summary: "국회는 오늘 경제 활성화를 위한 새로운 정책 법안을 만장일치로 통과시켰다.",
                     link: "https://example.com/politics1",
                     source: "BBC",
-                    time: new Date(Date.now() - 1000 * 60 * 30).toLocaleString('ko-KR'),
+                    time: toKoreanTime(new Date(now.getTime() - 1000 * 60 * 10)), // 10분 전
                     category: "politics"
                 },
                 {
@@ -536,7 +612,7 @@
                     summary: "대통령실이 다음 달 아시아 3개국 순방 계획을 공식 발표했다.",
                     link: "https://example.com/politics2",
                     source: "Reuters",
-                    time: new Date(Date.now() - 1000 * 60 * 45).toLocaleString('ko-KR'),
+                    time: toKoreanTime(new Date(now.getTime() - 1000 * 60 * 25)), // 25분 전
                     category: "politics"
                 },
                 {
@@ -544,7 +620,7 @@
                     summary: "여야 국정감사 이후 내년도 예산안에 대한 협상이 본격화되고 있다.",
                     link: "https://example.com/politics3",
                     source: "CNN",
-                    time: new Date(Date.now() - 1000 * 60 * 60).toLocaleString('ko-KR'),
+                    time: toKoreanTime(new Date(now.getTime() - 1000 * 60 * 45)), // 45분 전
                     category: "politics"
                 },
                 {
@@ -552,7 +628,7 @@
                     summary: "국내 증시가 외국인 매수세에 힘입어 강세를 보이며 3% 상승으로 거래를 마감했다.",
                     link: "https://example.com/economy1",
                     source: "Bloomberg",
-                    time: new Date(Date.now() - 1000 * 60 * 20).toLocaleString('ko-KR'),
+                    time: toKoreanTime(new Date(now.getTime() - 1000 * 60 * 5)), // 5분 전
                     category: "economy"
                 },
                 {
@@ -560,7 +636,7 @@
                     summary: "삼성전자가 메모리 반도체 가격 상승에 힘입어 이번 분기 실적이 예상을 크게 웃돌 것으로 전망된다.",
                     link: "https://example.com/economy2",
                     source: "Financial Times",
-                    time: new Date(Date.now() - 1000 * 60 * 35).toLocaleString('ko-KR'),
+                    time: toKoreanTime(new Date(now.getTime() - 1000 * 60 * 15)), // 15분 전
                     category: "economy"
                 },
                 {
@@ -568,7 +644,7 @@
                     summary: "미국 연준의 금리 인상 속도 조절 시사로 원화가 달러 대비 강세를 보이고 있다.",
                     link: "https://example.com/economy3",
                     source: "Wall Street Journal",
-                    time: new Date(Date.now() - 1000 * 60 * 50).toLocaleString('ko-KR'),
+                    time: toKoreanTime(new Date(now.getTime() - 1000 * 60 * 35)), // 35분 전
                     category: "economy"
                 },
                 {
@@ -576,7 +652,7 @@
                     summary: "가상화폐 비트코인이 기관 투자자들의 관심 증가로 5만 달러를 돌파했다.",
                     link: "https://example.com/economy4",
                     source: "The Guardian",
-                    time: new Date(Date.now() - 1000 * 60 * 65).toLocaleString('ko-KR'),
+                    time: toKoreanTime(new Date(now.getTime() - 1000 * 60 * 55)), // 55분 전
                     category: "economy"
                 },
                 {
@@ -584,7 +660,7 @@
                     summary: "토트넘의 손흥민이 해트트릭을 기록하며 프리미어리그 득점왕 경쟁에서 선두를 달리고 있다.",
                     link: "https://example.com/sports1",
                     source: "ESPN",
-                    time: new Date(Date.now() - 1000 * 60 * 15).toLocaleString('ko-KR'),
+                    time: toKoreanTime(new Date(now.getTime() - 1000 * 60 * 2)), // 2분 전
                     category: "sports"
                 },
                 {
@@ -592,7 +668,7 @@
                     summary: "파리 올림픽 조직위원회가 경기장 건설과 인프라 구축이 계획대로 진행되고 있다고 발표했다.",
                     link: "https://example.com/sports2",
                     source: "Al Jazeera",
-                    time: new Date(Date.now() - 1000 * 60 * 40).toLocaleString('ko-KR'),
+                    time: toKoreanTime(new Date(now.getTime() - 1000 * 60 * 30)), // 30분 전
                     category: "sports"
                 },
                 {
@@ -600,7 +676,7 @@
                     summary: "리오넬 메시가 인터 마이애미와 2026년까지 계약을 연장하기로 합의했다고 구단이 발표했다.",
                     link: "https://example.com/sports3",
                     source: "Associated Press",
-                    time: new Date(Date.now() - 1000 * 60 * 55).toLocaleString('ko-KR'),
+                    time: toKoreanTime(new Date(now.getTime() - 1000 * 60 * 40)), // 40분 전
                     category: "sports"
                 }
             ];
@@ -650,19 +726,28 @@
                 document.getElementById('status-text').textContent = '샘플 뉴스 표시 중';
             }
 
-            // 각 카테고리별로 시간순 정렬
+            // 각 카테고리별로 최신순 정렬 (한국시간 기준)
             Object.keys(newsData).forEach(category => {
-                newsData[category].sort((a, b) => new Date(b.time.replace(/\./g, '/')) - new Date(a.time.replace(/\./g, '/')));
+                newsData[category].sort((a, b) => {
+                    const timeA = new Date(a.time.replace(/\./g, '/'));
+                    const timeB = new Date(b.time.replace(/\./g, '/'));
+                    return timeB.getTime() - timeA.getTime(); // 최신순 (내림차순)
+                });
             });
 
             // UI 업데이트
             renderNews();
             
             document.getElementById('spinner').style.display = 'none';
-            document.getElementById('last-update').textContent = `마지막 업데이트: ${new Date().toLocaleString('ko-KR')}`;
+            document.getElementById('last-update').textContent = `마지막 업데이트: ${getKoreanNow()}`;
 
-            // 30분마다 자동 업데이트
-            setTimeout(loadAllNews, 30 * 60 * 1000);
+            // 기존 자동 업데이트 타이머 제거
+            if (autoRefreshInterval) {
+                clearTimeout(autoRefreshInterval);
+            }
+            
+            // 10분마다 자동 업데이트 (더 자주 갱신)
+            autoRefreshInterval = setTimeout(loadAllNews, 10 * 60 * 1000);
         }
 
         // 페이지 로드 시 뉴스 데이터 로드
