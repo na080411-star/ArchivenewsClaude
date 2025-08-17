@@ -1,7 +1,14 @@
 import Parser from 'rss-parser';
 import { NextResponse } from 'next/server';
 
-const parser = new Parser();
+const parser = new Parser({
+  customFields: {
+    item: ['media:content', 'media:group']
+  },
+  headers: {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+  }
+});
 
 const newsSources = [
     { name: 'BBC World', url: 'https://feeds.bbci.co.uk/news/world/rss.xml' },
