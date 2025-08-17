@@ -1,60 +1,49 @@
-import Parser from 'rss-parser';
+// app/api/news/route.js
 import { NextResponse } from 'next/server';
 
-const parser = new Parser({
-  customFields: {
-    item: ['media:content', 'media:group']
-  },
-  headers: {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-  }
-});
+const NEWS_API_KEY = process.env.NEWS_API_KEY;
+const API_URL = 'https://newsapi.org/v2/top-headlines';
 
 const newsSources = [
-    { name: 'BBC World', url: 'https://feeds.bbci.co.uk/news/world/rss.xml' },
-    { name: 'The Guardian', url: 'https://www.theguardian.com/world/rss' },
-    { name: 'New York Times', url: 'https://rss.nytimes.com/services/xml/rss/nyt/World.xml' },
-    { name: 'CNN Top Stories', url: 'http://rss.cnn.com/rss/cnn_topstories.rss' },
-    { name: 'Reuters Financial', url: 'https://ir.thomsonreuters.com/rss/events.xml' },
-{ name: 'Al Jazeera', url: 'https://www.aljazeera.com/xml/rss/all.xml' },
-{ name: 'Bloomberg Top News', url: 'https://feeds.bloomberg.com/brief/top' },
-{ name: 'The Verge', url: 'https://www.theverge.com/rss/index.xml' },
-{ name: 'Mashable', url: 'https://mashable.com/feeds/rss/all' },
-{ name: 'Engadget', url: 'https://www.engadget.com/rss.xml' }
+  'bbc-news',
+  'the-guardian-uk',
+  'cnn',
+  'reuters',
+  'associated-press',
+  'the-verge',
 ];
 
 export async function GET() {
-  try {
-    const fetchPromises = newsSources.map(source => 
-        parser.parseURL(source.url).then(feed => ({
-            source: source.name,
-            items: feed.items
-        }))
-    );
-    
-    const results = await Promise.allSettled(fetchPromises);
-    let allNews = [];
-
-    results.forEach(result => {
-        if (result.status === 'fulfilled') {
-            const { source, items } = result.value;
-            const parsedItems = items.map(item => ({
-                title: item.title,
-                link: item.link,
-                pubDate: item.pubDate,
-                source: source
-            }));
-            allNews.push(...parsedItems);
-        } else {
-            console.error(`Error fetching RSS for a source:`, result.reason);
-        }
-    });
-
-    allNews.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
-    
-    return NextResponse.json(allNews.slice(0, 50));
-  } catch (error) {
-    console.error('API Handler Error:', error);
-    return NextResponse.json({ message: 'Failed to fetch news data.' }, { status: 500 });
+  if (!NEWS_API_KEY) {
+    return NextResponse.json({ error: 'NEWS_API_KEY is not set' }, { status: 500 });
   }
+
+  const allNews = [];
+  const promises = newsSources.map(async (sourceId) => {
+    const url = `${API_URL}?sources=${sourceId}&apiKey=${NEWS_API_KEY}`;
+    try {
+      const response = await fetch(url, { next: { revalidate: 3600 } });
+      if (!response.ok) {
+        throw new Error(`Failed to fetch from NewsAPI for source: ${sourceId}`);
+      }
+      const data = await response.json();
+      if (data.articles) {
+        data.articles.forEach(article => {
+          allNews.push({
+            title: article.title,
+            link: article.url,
+            source: article.source.name,
+            pubDate: article.publishedAt,
+            summary: article.description,
+          });
+        });
+      }
+    } catch (error) {
+      console.error(error.message);
+    }
+  });
+
+  await Promise.allSettled(promises);
+
+  return NextResponse.json(allNews.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate)));
 }
