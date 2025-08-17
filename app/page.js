@@ -34,10 +34,6 @@ export default function HomePage() {
     setStatusText('Fetching news...');
     setIsRefreshing(true);
 
-  const loadAllNews = async () => {
-    setStatusText('Fetching news...');
-    setIsRefreshing(true);
-
     try {
       const response = await fetch(`${apiBaseUrl}/api/news`, { cache: 'no-store' });
       if (!response.ok) {
@@ -46,12 +42,12 @@ export default function HomePage() {
       const data = await response.json();
       setNewsData(data);
       setStatusText('Latest news is ready.');
-      setLastUpdate(getEasternTimeNow()); // <-- 이 줄이 정확한 위치에 있는지 확인
+      setLastUpdate(getEasternTimeNow());
     } catch (error) {
       console.error('Failed to fetch from backend:', error);
       setNewsData([]);
       setStatusText('An error occurred while refreshing.');
-      setLastUpdate('Failed to update'); // <-- 업데이트 실패 시 메시지 추가
+      setLastUpdate('Failed to update');
     } finally {
       setIsRefreshing(false);
     }
