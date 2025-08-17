@@ -2,7 +2,7 @@
 import { NextResponse } from 'next/server';
 
 const NEWS_API_KEY = process.env.NEWS_API_KEY;
-const API_URL = 'https://newsapi.org/v2/top-headlines';
+const API_URL = 'https://newsapi.org/v2/everything';
 
 const newsSources = [
   'bbc-news',
@@ -11,6 +11,10 @@ const newsSources = [
   'reuters',
   'associated-press',
   'the-verge',
+  'bloomberg', // 'bloomberg'로 변경
+  'techcrunch', // TechCrunch 추가
+  'wired-de', // Wired 추가
+  'google-news' // 구글 뉴스 추가 (일반적으로 매우 자주 업데이트됨)
 ];
 
 export async function GET() {
@@ -19,8 +23,8 @@ export async function GET() {
   }
 
   const allNews = [];
-  const promises = newsSources.map(async (sourceId) => {
-    const url = `${API_URL}?sources=${sourceId}&apiKey=${NEWS_API_KEY}`;
+const promises = newsSources.map(async (sourceId) => {
+  const url = `${API_URL}?q=news&sources=${sourceId}&apiKey=${NEWS_API_KEY}`;
     try {
       const response = await fetch(url, { next: { revalidate: 3600 } });
       if (!response.ok) {
