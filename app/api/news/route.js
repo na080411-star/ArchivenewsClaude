@@ -20,7 +20,6 @@ const newsSources = [
   { name: 'Fortune', url: 'https://fortune.com/feed' },
   { name: 'CNBC Top News', url: 'https://www.cnbc.com/id/100003114/device/rss/rss.html' },
   { name: 'Scientific American', url: 'http://rss.sciam.com/ScientificAmerican-Global' },
-  { name: 'Nature', url: 'https://www.nature.com/nature.rss' },
   { name: 'ScienceDaily', url: 'https://www.sciencedaily.com/rss/all.xml' },
   { name: 'NASA Breaking News', url: 'https://www.nasa.gov/rss/dyn/breaking_news.rss' },
   { name: 'NPR Hidden Brain', url: 'https://feeds.npr.org/510308/podcast.xml' },
