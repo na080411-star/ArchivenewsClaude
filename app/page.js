@@ -46,7 +46,8 @@ export default function HomePage() {
     setIsRefreshing(true);
 
     try {
-      const response = await fetch(`${apiBaseUrl}/api/news`);
+      // 캐싱을 방지하기 위해 cache 옵션을 추가합니다.
+      const response = await fetch(`${apiBaseUrl}/api/news`, { cache: 'no-store' });
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
