@@ -42,7 +42,20 @@ export async function GET() {
 
   const promises = newsSources.map(async (source) => {
     try {
-      const feed = await parser.parseURL(source.url);
+      // 🚨 이 부분이 핵심이야! 🚨
+      // rss-parser.parseURL() 대신 직접 fetch를 사용하고 캐싱 옵션을 줘.
+      const rssResponse = await fetch(source.url, { 
+        cache: 'no-store' // <--- 여기서 캐싱을 비활성화! 
+      });
+
+      // HTTP 응답이 성공적인지 확인
+      if (!rssResponse.ok) {
+          throw new Error(`Failed to fetch RSS from ${source.name}: ${rssResponse.statusText}`);
+      }
+
+      const rssText = await rssResponse.text(); // 응답을 텍스트로 읽어와
+      const feed = await parser.parseString(rssText); // 텍스트를 파싱
+
       feed.items.forEach(item => {
         allNews.push({
           title: item.title,
@@ -53,7 +66,7 @@ export async function GET() {
         });
       });
     } catch (error) {
-      console.error(`Error fetching RSS for ${source.name}:`, error.message);
+      console.error(`Error fetching or parsing RSS for ${source.name}:`, error.message);
     }
   });
 
