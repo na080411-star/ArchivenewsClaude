@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Archive - 글로벌 뉴스 아카이브</title>
     <style>
+        /* 기존 스타일은 동일하게 유지 */
         * {
             margin: 0;
             padding: 0;
@@ -173,79 +174,22 @@
             100% { transform: rotate(360deg); }
         }
 
-        .tab-container {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 25px;
-            overflow: hidden;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
-        }
-
-        .tabs {
-            display: flex;
-            background: rgba(0, 0, 0, 0.1);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .tab {
-            flex: 1;
-            padding: 25px;
-            text-align: center;
+        /* 탭 관련 스타일 제거 */
+        .tab-container, .tabs, .tab, .tab-content {
+            display: block;
             background: none;
             border: none;
-            cursor: pointer;
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.7);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            backdrop-filter: blur(10px);
+            padding: 0;
+            box-shadow: none;
         }
-
-        .tab:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.9);
-            transform: translateY(-1px);
+        
+        .tab {
+            display: none; /* 탭 버튼 자체를 숨김 */
         }
-
-        .tab.active {
-            color: #ffffff;
-            background: rgba(255, 255, 255, 0.15);
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
-        }
-
-        .tab.active::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #64b5f6, #42a5f5, #2196f3);
-            box-shadow: 0 0 20px rgba(33, 150, 243, 0.6);
-        }
-
-        .tab-content {
-            display: none;
-            padding: 35px;
+        
+        /* news-list를 위한 스타일 추가 */
+        #news-list {
             min-height: 500px;
-        }
-
-        .tab-content.active {
-            display: block;
-            animation: fadeInUp 0.5s ease-out;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         .news-item {
@@ -305,6 +249,20 @@
             margin-bottom: 20px;
             line-height: 1.6;
             text-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* 뉴스 카테고리 태그 스타일 */
+        .news-category {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-right: 10px;
+            backdrop-filter: blur(5px);
         }
 
         .news-meta {
@@ -373,19 +331,6 @@
                 gap: 10px;
             }
 
-            .tabs {
-                flex-direction: column;
-            }
-
-            .tab {
-                padding: 20px;
-                font-size: 1rem;
-            }
-
-            .tab-content {
-                padding: 25px;
-            }
-
             .news-item {
                 padding: 25px;
                 margin-bottom: 20px;
@@ -422,7 +367,6 @@
         }
 
         /* 접근성 개선 */
-        .tab:focus,
         .refresh-btn:focus {
             outline: 2px solid rgba(255, 255, 255, 0.8);
             outline-offset: 2px;
@@ -444,10 +388,6 @@
         /* 성능 최적화를 위한 will-change 속성 */
         .news-item {
             will-change: transform, box-shadow;
-        }
-
-        .tab {
-            will-change: background-color, transform;
         }
 
         .refresh-btn {
@@ -476,32 +416,10 @@
             </div>
         </div>
 
-        <div class="tab-container">
-            <div class="tabs" role="tablist">
-                <button class="tab active" onclick="switchTab('politics', this)" role="tab" aria-selected="true">정치</button>
-                <button class="tab" onclick="switchTab('economy', this)" role="tab" aria-selected="false">경제</button>
-                <button class="tab" onclick="switchTab('sports', this)" role="tab" aria-selected="false">스포츠</button>
-            </div>
-
-            <div id="politics" class="tab-content active" role="tabpanel">
-                <div class="empty-state">
-                    <div class="empty-state-icon">🏛️</div>
-                    <div class="empty-state-text">정치 뉴스를 불러오고 있습니다...</div>
-                </div>
-            </div>
-
-            <div id="economy" class="tab-content" role="tabpanel">
-                <div class="empty-state">
-                    <div class="empty-state-icon">📈</div>
-                    <div class="empty-state-text">경제 뉴스를 불러오고 있습니다...</div>
-                </div>
-            </div>
-
-            <div id="sports" class="tab-content" role="tabpanel">
-                <div class="empty-state">
-                    <div class="empty-state-icon">⚽</div>
-                    <div class="empty-state-text">스포츠 뉴스를 불러오고 있습니다...</div>
-                </div>
+        <div id="news-list">
+            <div class="empty-state">
+                <div class="empty-state-icon">🌐</div>
+                <div class="empty-state-text">최신 뉴스를 불러오고 있습니다...</div>
             </div>
         </div>
     </div>
@@ -516,30 +434,22 @@
             { name: 'The Guardian', url: 'https://www.theguardian.com/world/rss' }
         ];
 
-        // 카테고리별 키워드 (개선된 분류)
+        // 카테고리별 키워드 (분류 기능은 유지)
         const categoryKeywords = {
-            politics: [
-                '정치', '대통령', '국회', '선거', '정부', '정책', '의원', '국무총리', '장관', '여당', '야당', '국정감사',
-                'president', 'government', 'politics', 'election', 'minister', 'parliament', 'senate',  
-                'congress', 'policy', 'vote', 'campaign', 'political', 'administration', 'cabinet', 'democracy'
-            ],
-            economy: [
-                '경제', '주식', '증시', '금융', '은행', '투자', '기업', '회사', '매출', '수익', '코스피', '환율', '인플레이션',
-                'economy', 'stock', 'market', 'finance', 'bank', 'investment', 'company', 'business',  
-                'profit', 'trade', 'gdp', 'inflation', 'economic', 'financial', 'corporate', 'revenue', 'earnings'
-            ],
-            sports: [
-                '스포츠', '축구', '야구', '농구', '올림픽', '월드컵', '경기', '선수', '팀', '리그', '토너먼트', '챔피언',
-                'sports', 'football', 'soccer', 'baseball', 'basketball', 'olympics', 'world cup',  
-                'game', 'player', 'team', 'match', 'championship', 'league', 'tournament', 'athlete'
-            ]
+            politics: ['정치', '대통령', '국회', '선거', '정부', '정책', '의원', 'political', 'government', 'election'],
+            economy: ['경제', '주식', '증시', '금융', '은행', '투자', '기업', 'market', 'finance', 'economic'],
+            sports: ['스포츠', '축구', '야구', '농구', '올림픽', '경기', '선수', 'sports', 'football', 'game']
+        };
+        const categoryLabels = {
+            politics: '정치',
+            economy: '경제',
+            sports: '스포츠'
         };
 
-        let newsData = { politics: [], economy: [], sports: [] };
+        let newsData = []; // 단일 배열로 변경
         let autoRefreshInterval;
         let lastUpdateTime = null;
 
-        // 시간 관련 유틸리티 함수들
         function toKoreanTime(date) {
             return new Intl.DateTimeFormat('ko-KR', {
                 timeZone: 'Asia/Seoul',
@@ -556,15 +466,6 @@
             return new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
         }
 
-        function parseTimeString(timeStr) {
-            // 한국어 시간 문자열을 Date 객체로 변환
-            try {
-                return new Date(timeStr.replace(/\./g, '/'));
-            } catch (e) {
-                return new Date();
-            }
-        }
-
         function getRelativeTime(date) {
             const now = new Date();
             const diff = now - new Date(date);
@@ -578,11 +479,234 @@
             return `${days}일 전`;
         }
 
-        // 수동 갱신 함수 (개선)
+        // 텍스트 카테고리 분류 함수 (기존과 동일)
+        function categorizeNews(title, description) {
+            const text = (title + ' ' + description).toLowerCase();
+            const categoryScores = {};
+
+            for (const [category, keywords] of Object.entries(categoryKeywords)) {
+                categoryScores[category] = 0;
+                keywords.forEach(keyword => {
+                    const keywordLower = keyword.toLowerCase();
+                    if (title.toLowerCase().includes(keywordLower)) {
+                        categoryScores[category] += 3;
+                    }
+                    if (description.toLowerCase().includes(keywordLower)) {
+                        categoryScores[category] += 1;
+                    }
+                });
+            }
+
+            const bestCategory = Object.keys(categoryScores).reduce((a, b) => 
+                categoryScores[a] > categoryScores[b] ? a : b
+            );
+            
+            return categoryScores[bestCategory] >= 2 ? bestCategory : null;
+        }
+
+        // 텍스트 요약 함수 (기존과 동일)
+        function summarizeText(text, maxLength = 120) {
+            if (!text || text.length <= maxLength) return text || '';
+            text = text.replace(/<[^>]*>/g, '').trim();
+            const sentences = text.split(/[.!?]+/);
+            if (sentences[0] && sentences[0].length <= maxLength && sentences[0].length >= 30) {
+                return sentences[0].trim() + '.';
+            }
+            const words = text.split(' ');
+            let summary = '';
+            for (const word of words) {
+                if ((summary + ' ' + word).length > maxLength) break;
+                summary += (summary ? ' ' : '') + word;
+            }
+            return summary.trim() + '...';
+        }
+        
+        // 뉴스 아이템 HTML 생성 (카테고리 태그 추가)
+        function createNewsItem(news) {
+            const relativeTime = getRelativeTime(news.timestamp);
+            const categoryTag = news.category ? `<span class="news-category">${categoryLabels[news.category]}</span>` : '';
+            
+            return `
+                <div class="news-item">
+                    <a href="${news.link}" target="_blank" rel="noopener noreferrer" class="news-link">
+                        <div class="news-title">${categoryTag}${news.title}</div>
+                        <div class="news-summary">${news.summary}</div>
+                        <div class="news-meta">
+                            <span class="news-source">${news.source}</span>
+                            <span class="news-time" title="${news.time}">${relativeTime}</span>
+                        </div>
+                    </a>
+                </div>
+            `;
+        }
+
+        // 뉴스 데이터 렌더링 (단일 목록)
+        function renderNews() {
+            const container = document.getElementById('news-list');
+
+            if (newsData.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🌐</div>
+                        <div class="empty-state-text">불러올 뉴스가 없습니다.</div>
+                    </div>
+                `;
+            } else {
+                const newsHTML = newsData.slice(0, 50).map(createNewsItem).join(''); // 최대 50개만 표시
+                container.innerHTML = newsHTML;
+            }
+        }
+
+        // RSS 피드 가져오기 (기존과 동일)
+        async function fetchRSSFeed(url, timeout = 8000) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeout);
+            try {
+                const proxyUrls = [
+                    `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+                    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`
+                ];
+                for (const proxyUrl of proxyUrls) {
+                    try {
+                        const response = await fetch(proxyUrl, {
+                            signal: controller.signal,
+                            headers: {
+                                'User-Agent': 'Mozilla/5.0 (compatible; Archive News Bot)'
+                            }
+                        });
+                        if (response.ok) {
+                            const data = await response.json();
+                            const content = data.contents || data.body || data;
+                            if (typeof content === 'string' && content.includes('<rss')) {
+                                const parser = new DOMParser();
+                                const xml = parser.parseFromString(content, 'text/xml');
+                                if (xml && !xml.querySelector('parsererror') && xml.querySelector('item, entry')) {
+                                    clearTimeout(timeoutId);
+                                    return xml;
+                                }
+                            }
+                        }
+                    } catch (proxyError) {
+                        if (proxyError.name === 'AbortError') {
+                            console.log(`[프록시 타임아웃] URL: ${url} - ${proxyUrl}`);
+                        } else {
+                            console.log(`[프록시 오류] URL: ${url} - ${proxyUrl}:`, proxyError.message);
+                        }
+                        continue;
+                    }
+                }
+                return null;
+            } finally {
+                clearTimeout(timeoutId);
+            }
+        }
+
+        function parseRSSFeed(xml, sourceName) {
+            if (!xml) return [];
+            const items = xml.querySelectorAll('item, entry');
+            const news = [];
+            items.forEach((item) => {
+                const title = item.querySelector('title')?.textContent?.trim();
+                const description = item.querySelector('description, summary, content')?.textContent?.trim() || '';
+                const link = item.querySelector('link')?.textContent?.trim() || item.querySelector('link')?.getAttribute('href') || '';
+                const pubDate = item.querySelector('pubDate, published, updated')?.textContent?.trim();
+
+                if (title && link) {
+                    const cleanDescription = description.replace(/<[^>]*>/g, '').trim();
+                    const category = categorizeNews(title, cleanDescription);
+                    const publishDate = pubDate ? new Date(pubDate) : new Date();
+                    
+                    news.push({
+                        title: title.substring(0, 150),
+                        summary: summarizeText(cleanDescription || title),
+                        link,
+                        source: sourceName,
+                        category: category,
+                        time: toKoreanTime(publishDate),
+                        timestamp: publishDate.getTime()
+                    });
+                }
+            });
+            return news;
+        }
+
+        // 샘플 뉴스 데이터 생성 (카테고리 불문하고 단일 배열로 반환)
+        function generateSampleNews() {
+            const now = new Date();
+            return [
+                {
+                    title: "국회, 새로운 경제정책 법안 통과",
+                    summary: "국회는 오늘 경제 활성화를 위한 새로운 정책 법안을 만장일치로 통과시켰습니다.",
+                    link: "https://example.com/politics1",
+                    source: "BBC World",
+                    category: "politics",
+                    time: toKoreanTime(new Date(now.getTime() - 1000 * 60 * 8)),
+                    timestamp: now.getTime() - 1000 * 60 * 8
+                },
+                {
+                    title: "코스피, 외국인 매수세에 힘입어 3% 상승",
+                    summary: "국내 증시가 외국인 투자자들의 적극적인 매수세에 힘입어 강세를 보였습니다.",
+                    link: "https://example.com/economy1",
+                    source: "Reuters",
+                    category: "economy",
+                    time: toKoreanTime(new Date(now.getTime() - 1000 * 60 * 3)),
+                    timestamp: now.getTime() - 1000 * 60 * 3
+                },
+                {
+                    title: "손흥민, 프리미어리그 해트트릭",
+                    summary: "토트넘의 손흥민이 맨체스터 시티전에서 해트트릭을 기록하며 득점왕 경쟁 선두를 달리고 있습니다.",
+                    link: "https://example.com/sports1",
+                    source: "AP News",
+                    category: "sports",
+                    time: toKoreanTime(new Date(now.getTime() - 1000 * 60 * 1)),
+                    timestamp: now.getTime() - 1000 * 60 * 1
+                },
+                 {
+                    title: "미국 중간 선거, 여야 박빙의 승부",
+                    summary: "미국 중간 선거가 여야의 박빙의 승부로 펼쳐지고 있습니다.",
+                    link: "https://example.com/politics2",
+                    source: "CNN Top Stories",
+                    category: "politics",
+                    time: toKoreanTime(new Date(now.getTime() - 1000 * 60 * 25)),
+                    timestamp: now.getTime() - 1000 * 60 * 25
+                },
+            ];
+        }
+
+        // 모든 뉴스 소스에서 데이터 로드 (메인 로직)
+        async function loadAllNews() {
+            document.getElementById('status-text').textContent = '뉴스 로딩 중...';
+            document.getElementById('spinner').classList.remove('hidden');
+            
+            newsData = []; // 데이터 초기화
+
+            const promises = newsSources.map(async (source) => {
+                console.log(`[${source.name}] 뉴스 가져오는 중...`);
+                const xml = await fetchRSSFeed(source.url);
+                if (xml) {
+                    const parsedNews = parseRSSFeed(xml, source.name);
+                    // 모든 파싱된 뉴스를 newsData 배열에 추가
+                    newsData.push(...parsedNews);
+                }
+            });
+            
+            await Promise.all(promises);
+            
+            // 모든 뉴스 데이터를 최신순으로 정렬
+            newsData.sort((a, b) => b.timestamp - a.timestamp);
+            
+            lastUpdateTime = new Date();
+            renderNews();
+            
+            document.getElementById('status-text').textContent = '최신 뉴스 준비 완료';
+            document.getElementById('spinner').classList.add('hidden');
+            document.getElementById('last-update').textContent = `마지막 업데이트: ${getKoreanNow()}`;
+        }
+        
+        // 수동 갱신 함수
         async function manualRefresh() {
             const refreshBtn = document.getElementById('refresh-btn');
             const spinner = document.getElementById('spinner');
-            
             refreshBtn.disabled = true;
             refreshBtn.innerHTML = '<span class="refresh-icon" style="animation: spin 1s linear infinite;">🔄</span> 갱신중...';
             spinner.classList.remove('hidden');
@@ -601,346 +725,10 @@
             }
         }
 
-        // 탭 전환 함수 (접근성 개선)
-        function switchTab(category, tabElement) {
-            // 모든 탭과 콘텐츠 비활성화
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
-                tab.setAttribute('aria-selected', 'false');
-            });
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-
-            // 선택된 탭과 콘텐츠 활성화
-            tabElement.classList.add('active');
-            tabElement.setAttribute('aria-selected', 'true');
-            document.getElementById(category).classList.add('active');
-        }
-
-        // 텍스트 카테고리 분류 (개선된 알고리즘)
-        function categorizeNews(title, description) {
-            const text = (title + ' ' + description).toLowerCase();
-            const categoryScores = {};
-
-            // 각 카테고리별로 점수 계산
-            for (const [category, keywords] of Object.entries(categoryKeywords)) {
-                categoryScores[category] = 0;
-                
-                keywords.forEach(keyword => {
-                    const keywordLower = keyword.toLowerCase();
-                    // 제목에서 발견된 키워드는 더 높은 점수
-                    if (title.toLowerCase().includes(keywordLower)) {
-                        categoryScores[category] += 3;
-                    }
-                    // 설명에서 발견된 키워드
-                    if (description.toLowerCase().includes(keywordLower)) {
-                        categoryScores[category] += 1;
-                    }
-                });
-            }
-
-            // 가장 높은 점수를 가진 카테고리 반환 (최소 점수 2 이상)
-            const bestCategory = Object.keys(categoryScores).reduce((a, b) => 
-                categoryScores[a] > categoryScores[b] ? a : b
-            );
-            
-            return categoryScores[bestCategory] >= 2 ? bestCategory : null;
-        }
-
-        // 텍스트 요약 함수 (개선)
-        function summarizeText(text, maxLength = 120) {
-            if (!text || text.length <= maxLength) return text || '';
-            
-            // HTML 태그 제거
-            text = text.replace(/<[^>]*>/g, '').trim();
-            
-            // 첫 번째 문장이 적절한 길이면 그것을 사용
-            const sentences = text.split(/[.!?]+/);
-            if (sentences[0] && sentences[0].length <= maxLength && sentences[0].length >= 30) {
-                return sentences[0].trim() + '.';
-            }
-            
-            // 단어 단위로 자르기 (더 자연스럽게)
-            const words = text.split(' ');
-            let summary = '';
-            
-            for (const word of words) {
-                if ((summary + ' ' + word).length > maxLength) break;
-                summary += (summary ? ' ' : '') + word;
-            }
-            
-            return summary.trim() + '...';
-        }
-
-        // 뉴스 아이템 HTML 생성 (개선)
-        function createNewsItem(news) {
-            const relativeTime = getRelativeTime(news.timestamp || parseTimeString(news.time));
-            
-            return `
-                <div class="news-item">
-                    <a href="${news.link}" target="_blank" rel="noopener noreferrer" class="news-link">
-                        <div class="news-title">${news.title}</div>
-                        <div class="news-summary">${news.summary}</div>
-                        <div class="news-meta">
-                            <span class="news-source">${news.source}</span>
-                            <span class="news-time" title="${news.time}">${relativeTime}</span>
-                        </div>
-                    </a>
-                </div>
-            `;
-        }
-
-        // 뉴스 데이터 렌더링 (개선)
-        function renderNews() {
-            const categoryNames = { politics: '정치', economy: '경제', sports: '스포츠' };
-            const categoryIcons = { politics: '🏛️', economy: '📈', sports: '⚽' };
-
-            ['politics', 'economy', 'sports'].forEach(category => {
-                const container = document.getElementById(category);
-                const newsList = newsData[category];
-
-                if (newsList.length === 0) {
-                    container.innerHTML = `
-                        <div class="empty-state">
-                            <div class="empty-state-icon">${categoryIcons[category]}</div>
-                            <div class="empty-state-text">${categoryNames[category]} 뉴스가 없습니다.</div>
-                        </div>
-                    `;
-                } else {
-                    const newsHTML = newsList.slice(0, 15).map(createNewsItem).join(''); // 최대 15개만 표시
-                    container.innerHTML = newsHTML;
-                }
-            });
-        }
-
-        // RSS 피드 가져오기 (에러 핸들링 개선)
-        async function fetchRSSFeed(url, timeout = 8000) {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), timeout);
-
-            try {
-                // CORS 프록시 서비스들 (더 안정적인 것들로 교체)
-                const proxyUrls = [
-                    `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
-                    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`
-                ];
-
-                for (const proxyUrl of proxyUrls) {
-                    try {
-                        const response = await fetch(proxyUrl, {
-                            signal: controller.signal,
-                            headers: {
-                                'User-Agent': 'Mozilla/5.0 (compatible; Archive News Bot)'
-                            }
-                        });
-                        
-                        if (response.ok) {
-                            const data = await response.json();
-                            const content = data.contents || data.body || data;
-                            
-                            if (typeof content === 'string' && content.includes('<rss')) {
-                                const parser = new DOMParser();
-                                const xml = parser.parseFromString(content, 'text/xml');
-                                
-                                if (xml && !xml.querySelector('parsererror') && xml.querySelector('item, entry')) {
-                                    clearTimeout(timeoutId);
-                                    return xml;
-                                }
-                            }
-                        }
-                    } catch (proxyError) {
-                        if (proxyError.name === 'AbortError') {
-                            console.log(`프록시 ${proxyUrl} 타임아웃`);
-                        } else {
-                            console.log(`프록시 ${proxyUrl} 오류:`, proxyError.message);
-                        }
-                        continue;
-                    }
-                }
-                
-                return null;
-            } finally {
-                clearTimeout(timeoutId);
-            }
-        }
-
-        // RSS 피드 파싱 (개선)
-        function parseRSSFeed(xml, sourceName) {
-            if (!xml) return [];
-
-            const items = xml.querySelectorAll('item, entry');
-            const news = [];
-
-            items.forEach((item, index) => {
-                if (index >= 20) return; // 최대 20개만 처리
-
-                const title = item.querySelector('title')?.textContent?.trim();
-                const description = item.querySelector('description, summary, content')?.textContent?.trim() || '';
-                const link = item.querySelector('link')?.textContent?.trim() || 
-                           item.querySelector('link')?.getAttribute('href') || '';
-                const pubDate = item.querySelector('pubDate, published, updated')?.textContent?.trim();
-
-                if (title && link) {
-                    // HTML 태그 제거
-                    const cleanDescription = description.replace(/<[^>]*>/g, '').trim();
-                    const category = categorizeNews(title, cleanDescription);
-
-                    if (category) {
-                        const publishDate = pubDate ? new Date(pubDate) : new Date();
-                        
-                        news.push({
-                            title: title.substring(0, 150), // 제목 길이 제한
-                            summary: summarizeText(cleanDescription || title),
-                            link,
-                            source: sourceName,
-                            time: toKoreanTime(publishDate),
-                            category,
-                            timestamp: publishDate.getTime()
-                        });
-                    }
-                }
-            });
-
-            return news;
-        }
-
-        // 샘플 뉴스 데이터 생성
-        function generateSampleNews() {
-            const now = new Date();
-            return [
-                {
-                    title: "국회, 새로운 경제정책 법안 통과로 경제 활성화 기대",
-                    summary: "국회는 오늘 경제 활성화를 위한 새로운 정책 법안을 만장일치로 통과시켰으며, 전문가들은 내년 경제성장률 상승을 예측하고 있다.",
-                    link: "https://example.com/politics1",
-                    source: "BBC Korea",
-                    time: toKoreanTime(new Date(now.getTime() - 1000 * 60 * 8)),
-                    category: "politics",
-                    timestamp: now.getTime() - 1000 * 60 * 8
-                },
-                {
-                    title: "대통령, 아시아 3개국 순방으로 외교 협력 강화 추진",
-                    summary: "대통령실이 다음 달 아시아 주요 3개국 순방 계획을 공식 발표하며, 경제 협력과 안보 협력 강화 방안을 논의할 예정이다.",
-                    link: "https://example.com/politics2",
-                    source: "Reuters",
-                    time: toKoreanTime(new Date(now.getTime() - 1000 * 60 * 22)),
-                    category: "politics",
-                    timestamp: now.getTime() - 1000 * 60 * 22
-                },
-                {
-                    title: "여야, 내년도 예산안 협상 본격화로 정치적 합의점 모색",
-                    summary: "여야가 국정감사 이후 내년도 예산안에 대한 협상이 본격화되고 있으며, 주요 현안에 대한 타협점을 찾기 위한 논의가 계속되고 있다.",
-                    link: "https://example.com/politics3",
-                    source: "CNN International",
-                    time: toKoreanTime(new Date(now.getTime() - 1000 * 60 * 35)),
-                    category: "politics",
-                    timestamp: now.getTime() - 1000 * 60 * 35
-                },
-                {
-                    title: "코스피, 외국인 매수세에 힘입어 3% 상승으로 강세 마감",
-                    summary: "국내 증시가 외국인 투자자들의 적극적인 매수세에 힘입어 강세를 보이며 3% 상승으로 거래를 마감했다. 반도체와 바이오 섹터가 상승을 주도했다.",
-                    link: "https://example.com/economy1",
-                    source: "Bloomberg",
-                    time: toKoreanTime(new Date(now.getTime() - 1000 * 60 * 3)),
-                    category: "economy",
-                    timestamp: now.getTime() - 1000 * 60 * 3
-                },
-                {
-                    title: "삼성전자, 메모리 반도체 슈퍼사이클로 실적 대폭 개선 전망",
-                    summary: "삼성전자가 메모리 반도체 가격 상승과 수요 증가에 힘입어 이번 분기 실적이 시장 예상을 크게 웃돌 것으로 전망된다고 발표했다.",
-                    link: "https://example.com/economy2",
-                    source: "Financial Times",
-                    time: toKoreanTime(new Date(now.getTime() - 1000 * 60 * 12)),
-                    category: "economy",
-                    timestamp: now.getTime() - 1000 * 60 * 12
-                },
-                {
-                    title: "원달러 환율, 1,300원대 회복으로 수출기업 경쟁력 향상 기대",
-                    summary: "미국 연준의 통화정책 완화 시사와 국내 경제지표 호조로 원화가 달러 대비 강세를 보이며 1,300원대를 회복했다.",
-                    link: "https://example.com/economy3",
-                    source: "Wall Street Journal",
-                    time: toKoreanTime(new Date(now.getTime() - 1000 * 60 * 28)),
-                    category: "economy",
-                    timestamp: now.getTime() - 1000 * 60 * 28
-                },
-                {
-                    title: "비트코인, 기관 투자 급증으로 5만 달러 돌파 역사적 순간",
-                    summary: "가상화폐 비트코인이 글로벌 기관 투자자들의 관심 증가와 ETF 승인 기대감으로 5만 달러를 돌파하며 새로운 역사를 썼다.",
-                    link: "https://example.com/economy4",
-                    source: "The Guardian",
-                    time: toKoreanTime(new Date(now.getTime() - 1000 * 60 * 45)),
-                    category: "economy",
-                    timestamp: now.getTime() - 1000 * 60 * 45
-                },
-                {
-                    title: "손흥민, 프리미어리그 해트트릭으로 득점왕 경쟁 선두 질주",
-                    summary: "토트넘의 손흥민이 맨체스터 시티전에서 해트트릭을 기록하며 프리미어리그 득점왕 경쟁에서 선두를 달리고 있어 한국 축구팬들의 기대가 높아지고 있다.",
-                    link: "https://example.com/sports1",
-                    source: "ESPN",
-                    time: toKoreanTime(new Date(now.getTime() - 1000 * 60 * 1)),
-                    category: "sports",
-                    timestamp: now.getTime() - 1000 * 60 * 1
-                },
-                {
-                    title: "2024 파리 올림픽, 모든 경기장 건설 완료로 성공적 개최 준비",
-                    summary: "파리 올림픽 조직위원회가 모든 경기장 건설과 인프라 구축이 계획보다 앞서 완료되어 성공적인 대회 개최를 위한 준비가 완료되었다고 발표했다.",
-                    link: "https://example.com/sports2",
-                    source: "Al Jazeera Sports",
-                    time: toKoreanTime(new Date(now.getTime() - 1000 * 60 * 18)),
-                    category: "sports",
-                    timestamp: now.getTime() - 1000 * 60 * 18
-                },
-                {
-                    title: "메시, 인터 마이애미와 2026년까지 장기 계약 연장 성사",
-                    summary: "리오넬 메시가 인터 마이애미와 2026년까지 계약을 연장하기로 합의했다고 구단이 공식 발표하며, MLS 리그의 위상 상승에 기여할 것으로 기대된다.",
-                    link: "https://example.com/sports3",
-                    source: "Associated Press",
-                    time: toKoreanTime(new Date(now.getTime() - 1000 * 60 * 20)),
-                    category: "sports",
-                    timestamp: now.getTime() - 1000 * 60 * 20
-                }
-            ];
-        }
-        
-        // 모든 뉴스 소스에서 데이터 로드 (메인 로직)
-        async function loadAllNews() {
-            document.getElementById('status-text').textContent = '뉴스 로딩 중...';
-            document.getElementById('spinner').classList.remove('hidden');
-            
-            newsData = { politics: [], economy: [], sports: [] };
-            
-            const promises = newsSources.map(async (source) => {
-                console.log(`[${source.name}] 뉴스 가져오는 중...`);
-                const xml = await fetchRSSFeed(source.url);
-                if (xml) {
-                    const parsedNews = parseRSSFeed(xml, source.name);
-                    parsedNews.forEach(news => {
-                        if (news.category) {
-                            newsData[news.category].push(news);
-                        }
-                    });
-                }
-            });
-            
-            await Promise.all(promises);
-            
-            // 각 카테고리별로 최신순 정렬
-            for (const category in newsData) {
-                newsData[category].sort((a, b) => b.timestamp - a.timestamp);
-            }
-            
-            lastUpdateTime = new Date();
-            renderNews();
-            
-            document.getElementById('status-text').textContent = '최신 뉴스 준비 완료';
-            document.getElementById('spinner').classList.add('hidden');
-            document.getElementById('last-update').textContent = `마지막 업데이트: ${getKoreanNow()}`;
-        }
-
         // 초기 로딩 및 자동 갱신 설정
         document.addEventListener('DOMContentLoaded', () => {
             // 처음에는 샘플 데이터를 보여주고, 실제 데이터 로딩 시작
-            newsData.politics = generateSampleNews().filter(n => n.category === 'politics');
-            newsData.economy = generateSampleNews().filter(n => n.category === 'economy');
-            newsData.sports = generateSampleNews().filter(n => n.category === 'sports');
+            newsData = generateSampleNews();
             renderNews();
 
             // 실제 뉴스 데이터 로드 시작
