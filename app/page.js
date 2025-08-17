@@ -10,7 +10,7 @@ export default function HomePage() {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   // 로컬/배포 환경에 따라 API 주소 결정
-  const apiBaseUrl = 'https://newsarchive-two.vercel.app';
+  const apiBaseUrl = 'https://newsarchive-ruby.vercel.app/';
 
   // 시간을 미국 동부 시간으로 표시하는 함수
   const getEasternTimeNow = () => {
