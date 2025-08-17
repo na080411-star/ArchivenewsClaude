@@ -12,18 +12,6 @@ export default function HomePage() {
   // 로컬/배포 환경에 따라 API 주소 결정
   const apiBaseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
 
-  const toKoreanTime = (date) => {
-    return new Intl.DateTimeFormat('ko-KR', {
-      timeZone: 'Asia/Seoul',
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-    }).format(new Date(date));
-  };
-
   // 시간을 미국 동부 시간으로 표시하는 함수
   const getEasternTimeNow = () => {
     return new Date().toLocaleString('en-US', { timeZone: 'America/New_York', hour12: false });
@@ -53,12 +41,12 @@ export default function HomePage() {
       }
       const data = await response.json();
       setNewsData(data);
-      setLastUpdate(getEasternTimeNow()); // <-- 동부 시간으로 변경
-      setStatusText('Latest news is ready.'); // <-- 상태 메시지 변경
+      setLastUpdate(getEasternTimeNow());
+      setStatusText('Latest news is ready.');
     } catch (error) {
       console.error('Failed to fetch from backend:', error);
       setNewsData([]);
-      setStatusText('An error occurred while refreshing.'); // <-- 에러 메시지 변경
+      setStatusText('An error occurred while refreshing.');
     } finally {
       setIsRefreshing(false);
     }
