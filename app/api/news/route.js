@@ -15,7 +15,7 @@ const newsSources = [
     { name: 'The Guardian', url: 'https://www.theguardian.com/world/rss' },
     { name: 'New York Times', url: 'https://rss.nytimes.com/services/xml/rss/nyt/World.xml' },
     { name: 'CNN Top Stories', url: 'http://rss.cnn.com/rss/cnn_topstories.rss' },
-    { name: 'Reuters World', url: 'https://www.reuters.com/arc/outboundfeeds/rss/worldNews/' }
+    { name: 'Reuters Financial', url: 'https://ir.thomsonreuters.com/rss/events.xml' }
 ];
 
 export async function GET() {
