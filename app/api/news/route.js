@@ -15,7 +15,12 @@ const newsSources = [
     { name: 'The Guardian', url: 'https://www.theguardian.com/world/rss' },
     { name: 'New York Times', url: 'https://rss.nytimes.com/services/xml/rss/nyt/World.xml' },
     { name: 'CNN Top Stories', url: 'http://rss.cnn.com/rss/cnn_topstories.rss' },
-    { name: 'Reuters Financial', url: 'https://ir.thomsonreuters.com/rss/events.xml' }
+    { name: 'Reuters Financial', url: 'https://ir.thomsonreuters.com/rss/events.xml' },
+{ name: 'Associated Press (AP)', url: 'https://apnews.com/apf-topnews' },
+{ name: 'Bloomberg', url: 'https://www.bloomberg.com/feeds/bpol/news.xml' },
+{ name: 'The Washington Post', url: 'http://feeds.washingtonpost.com/rss/world' },
+{ name: 'Al Jazeera', url: 'https://www.aljazeera.com/xml/rss/all.xml' },
+{ name: 'VOA (Voice of America)', url: 'https://www.voanews.com/api/z--yevteq--' }
 ];
 
 export async function GET() {
