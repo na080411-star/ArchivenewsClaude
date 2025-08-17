@@ -13,8 +13,9 @@ const parser = new Parser({
 const newsSources = [
     { name: 'BBC World', url: 'https://feeds.bbci.co.uk/news/world/rss.xml' },
     { name: 'The Guardian', url: 'https://www.theguardian.com/world/rss' },
-    // { name: 'CNN Top Stories', url: 'http://rss.cnn.com/rss/cnn_topstories.rss' },
-    // { name: 'Reuters World', url: 'https://www.reuters.com/arc/outboundfeeds/rss/worldNews/' }
+    { name: 'New York Times', url: 'https://rss.nytimes.com/services/xml/rss/nyt/World.xml' },
+    { name: 'CNN Top Stories', url: 'http://rss.cnn.com/rss/cnn_topstories.rss' },
+    { name: 'Reuters World', url: 'https://www.reuters.com/arc/outboundfeeds/rss/worldNews/' }
 ];
 
 export async function GET() {
