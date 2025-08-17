@@ -10,7 +10,7 @@ export default function HomePage() {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   // 로컬/배포 환경에 따라 API 주소 결정
-  const apiBaseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
+ const apiBaseUrl = 'https://archivenews-claude.vercel.app';
 
   const toKoreanTime = (date) => {
     return new Intl.DateTimeFormat('ko-KR', {
