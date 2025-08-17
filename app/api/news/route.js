@@ -6,7 +6,9 @@ const parser = new Parser();
 const newsSources = [
   { name: 'BBC News', url: 'http://feeds.bbci.co.uk/news/rss.xml' },
   { name: 'The Verge', url: 'https://www.theverge.com/rss/index.xml' },
-  { name: 'Reuters Top News', url: 'http://feeds.reuters.com/reuters/topNews' },
+  { name: 'The Guardian', url: 'https://www.theguardian.com/world/rss' },
+  { name: 'The New York Times World', url: 'https://rss.nytimes.com/services/xml/rss/nyt/World.xml' },
+  { name: 'The New York Times Technology', url: 'https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml' }
 ];
 
 export async function GET() {
