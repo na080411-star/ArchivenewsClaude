@@ -1,53 +1,66 @@
-// app/api/news/route.js
 import { NextResponse } from 'next/server';
+import axios from 'axios';
+import * as cheerio from 'cheerio';
 
-const NEWS_API_KEY = process.env.NEWS_API_KEY;
-const API_URL = 'https://newsapi.org/v2/everything';
-
+// 각 언론사의 HTML 구조에 맞는 선택자(selector)를 정의합니다.
 const newsSources = [
-  'bbc-news',
-  'the-guardian-uk',
-  'cnn',
-  'reuters',
-  'associated-press',
-  'the-verge',
-  'bloomberg', // 'bloomberg'로 변경
-  'techcrunch', // TechCrunch 추가
-  'wired-de', // Wired 추가
-  'google-news' // 구글 뉴스 추가 (일반적으로 매우 자주 업데이트됨)
+  { 
+    name: 'The Verge', 
+    url: 'https://www.theverge.com/',
+    selector: '.c-entry-box--compact',
+    titleSelector: 'h2.c-entry-box--compact__title a',
+    linkSelector: 'h2.c-entry-box--compact__title a',
+    summarySelector: 'p.c-entry-box--compact__dek'
+  },
+  { 
+    name: 'TechCrunch', 
+    url: 'https://techcrunch.com/',
+    selector: '.post-block',
+    titleSelector: 'h2.post-block__title a',
+    linkSelector: 'h2.post-block__title a',
+    summarySelector: '.post-block__content'
+  },
+  {
+    name: 'Wired',
+    url: 'https://www.wired.com/',
+    selector: '.SummaryItem-cTYlC .SummaryItem-dJbQG',
+    titleSelector: '.SummaryItemHed-gCjXg',
+    linkSelector: '.SummaryItemHed-gCjXg a',
+    summarySelector: '.SummaryItemDek-ggnB'
+  }
 ];
 
 export async function GET() {
-  if (!NEWS_API_KEY) {
-    return NextResponse.json({ error: 'NEWS_API_KEY is not set' }, { status: 500 });
-  }
-
   const allNews = [];
-const promises = newsSources.map(async (sourceId) => {
-  const url = `${API_URL}?q=news&sources=${sourceId}&apiKey=${NEWS_API_KEY}`;
+  // Promise.allSettled를 사용해 모든 스크래핑 작업을 병렬로 처리합니다.
+  const promises = newsSources.map(async (source) => {
     try {
-      const response = await fetch(url, { next: { revalidate: 3600 } });
-      if (!response.ok) {
-        throw new Error(`Failed to fetch from NewsAPI for source: ${sourceId}`);
-      }
-      const data = await response.json();
-      if (data.articles) {
-        data.articles.forEach(article => {
+      const { data } = await axios.get(source.url);
+      const $ = cheerio.load(data);
+
+      // 각 언론사의 선택자에 맞춰 기사를 찾고 데이터를 추출합니다.
+      $(source.selector).each((index, element) => {
+        const title = $(element).find(source.titleSelector).text().trim();
+        const link = $(element).find(source.linkSelector).attr('href');
+        const summary = $(element).find(source.summarySelector).text().trim();
+        
+        if (title && link) {
           allNews.push({
-            title: article.title,
-            link: article.url,
-            source: article.source.name,
-            pubDate: article.publishedAt,
-            summary: article.description,
+            title,
+            link,
+            source: source.name,
+            pubDate: new Date().toISOString(),
+            summary,
           });
-        });
-      }
+        }
+      });
     } catch (error) {
-      console.error(error.message);
+      console.error(`Failed to scrape from ${source.name}:`, error.message);
     }
   });
 
   await Promise.allSettled(promises);
 
+  // 모든 기사를 가져온 후, 최신순으로 정렬하여 반환합니다.
   return NextResponse.json(allNews.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate)));
 }
