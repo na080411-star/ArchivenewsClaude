@@ -496,6 +496,8 @@
                 const container = document.getElementById(category);
                 const newsList = newsData[category];
 
+                console.log(`${category} 뉴스 개수:`, newsList.length); // 디버깅용
+
                 if (newsList.length === 0) {
                     const icons = { politics: '🏛️', economy: '📈', sports: '⚽' };
                     const names = { politics: '정치', economy: '경제', sports: '스포츠' };
