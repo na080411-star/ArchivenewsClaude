@@ -8,9 +8,12 @@ export default function HomePage() {
   const [statusText, setStatusText] = useState('Preparing news feed...');
   const [lastUpdate, setLastUpdate] = useState('Ready...');
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [stats, setStats] = useState(null);
 
   // 로컬/배포 환경에 따라 API 주소 결정
-  const apiBaseUrl = 'https://newsarchive-ruby.vercel.app/';
+  const apiBaseUrl = process.env.NODE_ENV === 'production' 
+    ? 'https://newsarchive-ruby.vercel.app/' 
+    : 'http://localhost:3000';
 
   // 시간을 미국 동부 시간으로 표시하는 함수
   const getEasternTimeNow = () => {
@@ -31,7 +34,7 @@ export default function HomePage() {
   };
 
   const loadAllNews = async () => {
-    setStatusText('Fetching news...');
+    setStatusText('Fetching news from 50+ sources...');
     setIsRefreshing(true);
 
     try {
@@ -40,8 +43,20 @@ export default function HomePage() {
         throw new Error('Network response was not ok');
       }
       const data = await response.json();
-      setNewsData(data);
-      setStatusText('Latest news is ready.');
+      
+      // 새로운 API 응답 구조 처리
+      const newsItems = data.news || data;
+      const responseStats = data.stats;
+      
+      setNewsData(newsItems);
+      setStats(responseStats);
+      
+      if (responseStats) {
+        setStatusText(`Loaded ${responseStats.totalArticles} articles from ${responseStats.successfulSources}/${responseStats.totalSources} sources`);
+      } else {
+        setStatusText('Latest news is ready.');
+      }
+      
       setLastUpdate(getEasternTimeNow());
     } catch (error) {
       console.error('Failed to fetch from backend:', error);
@@ -74,6 +89,13 @@ export default function HomePage() {
           </div>
           <div className="update-section">
             <div id="last-update">Last Updated: {lastUpdate}</div>
+            {stats && (
+              <div className="stats-info">
+                <span className="stats-text">
+                  📊 {stats.successfulSources}/{stats.totalSources} sources • {stats.totalArticles} articles
+                </span>
+              </div>
+            )}
             <button className="refresh-btn" onClick={loadAllNews} disabled={isRefreshing}>
               <span className={`refresh-icon ${isRefreshing ? 'spinning' : ''}`}>🔄</span>
               {isRefreshing ? 'Refreshing...' : 'Refresh'}
