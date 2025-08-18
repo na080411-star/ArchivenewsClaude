@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Vercel 배포 최적화
+  output: 'standalone',
+  
   async headers() {
     return [
       {
@@ -14,9 +17,11 @@ const nextConfig = {
       },
     ];
   },
-  // 외부 이미지 도메인 허용 (필요한 경우)
+  
+  // 외부 이미지 도메인 허용
   images: {
     domains: ['feeds.bbci.co.uk', 'rss.cnn.com', 'www.theguardian.com', 'www.theverge.com', 'rss.nytimes.com'],
+    unoptimized: true,
   },
 };
 
