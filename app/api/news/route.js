@@ -14,8 +14,8 @@ let newsCache = {
 // Cache duration: 30 seconds
 const CACHE_DURATION = 30 * 1000;
 
-// Smart Summary Function (AI-like effect)
-function generateSmartSummary(text, maxLength = 150) {
+// Two Sentence Summary Function
+function generateTwoSentenceSummary(text, maxLength = 300) {
   if (!text || text.length === 0) {
     return 'No content to summarize.';
   }
@@ -23,8 +23,8 @@ function generateSmartSummary(text, maxLength = 150) {
   // Remove HTML tags
   const cleanText = text.replace(/<[^>]*>/g, '');
   
-  // Split into sentences and calculate importance
-  const sentences = cleanText.split(/[.!?]+/).filter(s => s.trim().length > 10);
+  // Split into sentences and filter out very short ones
+  const sentences = cleanText.split(/[.!?]+/).filter(s => s.trim().length > 15);
   
   if (sentences.length === 0) {
     return cleanText.substring(0, maxLength) + (cleanText.length > maxLength ? '...' : '');
@@ -33,10 +33,8 @@ function generateSmartSummary(text, maxLength = 150) {
   // Keyword-based importance calculation
   const keywords = ['announced', 'launched', 'released', 'introduced', 'developed', 'created', 'found', 'discovered', 'revealed', 'confirmed', 'reported', 'stated', 'said', 'according', 'study', 'research', 'analysis', 'data', 'results', 'findings', 'new', 'latest', 'breakthrough', 'innovation', 'technology', 'scientists', 'experts', 'officials', 'government', 'company', 'industry'];
   
-  let bestSentence = sentences[0];
-  let bestScore = 0;
-  
-  sentences.forEach(sentence => {
+  // Score sentences by importance
+  const scoredSentences = sentences.map(sentence => {
     const lowerSentence = sentence.toLowerCase();
     let score = 0;
     
@@ -48,7 +46,7 @@ function generateSmartSummary(text, maxLength = 150) {
     });
     
     // Length score (prefer moderate length)
-    if (sentence.length > 50 && sentence.length < 200) {
+    if (sentence.length > 40 && sentence.length < 200) {
       score += 1;
     }
     
@@ -57,15 +55,29 @@ function generateSmartSummary(text, maxLength = 150) {
       score += 1;
     }
     
-    if (score > bestScore) {
-      bestScore = score;
-      bestSentence = sentence;
-    }
+    return { sentence: sentence.trim(), score };
   });
   
-  let summary = bestSentence.trim();
+  // Sort by score (highest first) and take top 2
+  const topSentences = scoredSentences
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 2)
+    .map(item => item.sentence);
   
-  // Adjust length
+  // If we have less than 2 sentences, use what we have
+  if (topSentences.length === 0) {
+    return cleanText.substring(0, maxLength) + (cleanText.length > maxLength ? '...' : '');
+  }
+  
+  // Join the two sentences
+  let summary = topSentences.join('. ');
+  
+  // Add period if it doesn't end with one
+  if (!summary.endsWith('.')) {
+    summary += '.';
+  }
+  
+  // Adjust length if needed
   if (summary.length > maxLength) {
     summary = summary.substring(0, maxLength - 3) + '...';
   }
@@ -325,8 +337,8 @@ async function fetchAllNews() {
            // Store original summary and auto-generate AI summary
            const originalSummary = item.contentSnippet || item.content || '';
            
-           // Auto-generate AI summary
-           const smartSummary = generateSmartSummary(`${item.title}. ${originalSummary}`, 150);
+                       // Auto-generate two sentence summary
+            const twoSentenceSummary = generateTwoSentenceSummary(`${item.title}. ${originalSummary}`, 300);
            
            // Classify article category
            const category = classifyArticle(item.title, originalSummary);
@@ -337,7 +349,7 @@ async function fetchAllNews() {
              source: source.name,
              pubDate: item.pubDate || new Date().toISOString(),
              summary: originalSummary,
-             aiSummary: smartSummary, // Auto-generated AI summary
+             aiSummary: twoSentenceSummary, // Auto-generated two sentence summary
              category: category, // Auto-classified category
            });
          }

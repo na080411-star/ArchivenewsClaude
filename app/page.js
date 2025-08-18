@@ -138,22 +138,29 @@ export default function HomePage() {
                   checked={showSmartSummary}
                   onChange={(e) => setShowSmartSummary(e.target.checked)}
                 />
-                <span className="toggle-text">🤖 Smart Summary (Auto-generated)</span>
+                <span className="toggle-text">🤖 Smart Summary</span>
               </label>
             </div>
             
             {/* Category Filter Buttons */}
             {stats && stats.categoryStats && (
               <div className="category-filters">
-                {Object.entries(stats.categoryStats).map(([category, count]) => (
-                  <button
-                    key={category}
-                    className={`category-btn ${selectedCategory === category ? 'active' : ''}`}
-                    onClick={() => handleCategoryClick(category)}
-                  >
-                    {category} ({count})
-                  </button>
-                ))}
+                {Object.entries(stats.categoryStats)
+                  .sort(([a], [b]) => {
+                    // General을 맨 앞으로, 나머지는 알파벳 순
+                    if (a === 'General') return -1;
+                    if (b === 'General') return 1;
+                    return a.localeCompare(b);
+                  })
+                  .map(([category, count]) => (
+                    <button
+                      key={category}
+                      className={`category-btn ${selectedCategory === category ? 'active' : ''}`}
+                      onClick={() => handleCategoryClick(category)}
+                    >
+                      {category} ({count})
+                    </button>
+                  ))}
               </div>
             )}
             
@@ -186,7 +193,7 @@ export default function HomePage() {
                   {showSmartSummary ? (
                     <div className="news-summary-container">
                       <div className="news-summary ai-summary">
-                        <span className="ai-badge">🤖 Smart Summary</span>
+                        <span className="summary-badge">🤖 Smart Summary</span>
                         {item.aiSummary || item.summary}
                       </div>
                     </div>
