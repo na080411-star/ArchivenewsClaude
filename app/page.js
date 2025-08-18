@@ -171,6 +171,24 @@ export default function HomePage() {
           </div>
         </header>
 
+        {/* Original Editorial Content for AdSense Compliance */}
+        <div className="editorial-content">
+          <div className="editorial-section">
+            <h2>📰 Today's Top Stories Analysis</h2>
+            <p>Our editorial team analyzes the most important news stories of the day, providing context and insights that help you understand the bigger picture behind the headlines.</p>
+          </div>
+          
+          <div className="editorial-section">
+            <h2>🤖 AI News Technology Insights</h2>
+            <p>Stay ahead of the curve with our expert analysis of artificial intelligence developments, tech industry trends, and their impact on society and business.</p>
+          </div>
+          
+          <div className="editorial-section">
+            <h2>🌍 Global Perspective</h2>
+            <p>Get a comprehensive view of world events with our curated selection of international news, providing diverse perspectives on global issues.</p>
+          </div>
+        </div>
+
         {/* Header Ad Banner */}
         <AdBanner
           adClient="ca-pub-1895301779178331"
@@ -290,6 +308,21 @@ export default function HomePage() {
           )}
         </div>
       </div>
+      
+      {/* Footer for AdSense Compliance */}
+      <footer className="site-footer">
+        <div className="footer-content">
+          <div className="footer-links">
+            <a href="/about" className="footer-link">About Us</a>
+            <a href="/privacy" className="footer-link">Privacy Policy</a>
+            <a href="/terms" className="footer-link">Terms of Service</a>
+            <a href="/contact" className="footer-link">Contact</a>
+          </div>
+          <div className="footer-info">
+            <p>&copy; 2024 News Archive. All rights reserved. Providing AI-powered news summaries and analysis.</p>
+          </div>
+        </div>
+      </footer>
     </>
   );
 }
