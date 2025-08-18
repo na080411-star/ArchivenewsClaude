@@ -247,13 +247,12 @@ export default function HomePage() {
                   <a href={item.link} target="_blank" rel="noopener noreferrer" className="news-link">
                     <div className="news-title">{item.title}</div>
                     
-                    {/* AI Summary Display */}
-                    <div className="news-summary-container">
-                      <div className="news-summary ai-summary">
-                        <span className="summary-badge">🤖 AI Summary</span>
-                        {item.aiSummary || "AI summary not available"}
-                      </div>
-                    </div>
+                                         {/* AI Summary Display */}
+                     <div className="news-summary-container">
+                       <div className="news-summary ai-summary">
+                         {item.aiSummary || "AI summary not available"}
+                       </div>
+                     </div>
                     
                     <div className="news-meta">
                       <span className="news-source">{item.source}</span>
