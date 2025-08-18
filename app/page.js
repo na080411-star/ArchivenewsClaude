@@ -142,8 +142,10 @@ export default function HomePage() {
   }, [autoRefresh, apiBaseUrl]); // autoRefresh와 apiBaseUrl이 변경될 때마다 useEffect 재실행
 
   // Get displayed news based on current filter and display count
-  const displayedNews = filteredNews.slice(0, displayCount);
-  const hasMoreNews = filteredNews.length > displayCount;
+  // displayCount가 filteredNews.length보다 클 경우 조정
+  const adjustedDisplayCount = Math.min(displayCount, filteredNews.length);
+  const displayedNews = filteredNews.slice(0, adjustedDisplayCount);
+  const hasMoreNews = filteredNews.length > adjustedDisplayCount;
   
   // Debug logging
   console.log('Debug Info:', {
@@ -151,7 +153,8 @@ export default function HomePage() {
     totalNews: newsData.length,
     filteredNews: filteredNews.length,
     displayCount,
-    remaining: filteredNews.length - displayCount,
+    adjustedDisplayCount,
+    remaining: filteredNews.length - adjustedDisplayCount,
     hasMoreNews
   });
 
@@ -262,7 +265,7 @@ export default function HomePage() {
                 <div className="load-more-container">
                   <button className="load-more-btn" onClick={loadMoreArticles}>
                     <span className="load-more-icon">⬇</span>
-                    Load More Articles ({filteredNews.length - displayCount} remaining)
+                                         Load More Articles ({filteredNews.length - adjustedDisplayCount} remaining)
                   </button>
                 </div>
               )}
