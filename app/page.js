@@ -13,12 +13,28 @@ export default function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [filteredNews, setFilteredNews] = useState([]);
   const [autoRefresh, setAutoRefresh] = useState(true); // Auto-refresh state
-  // Removed displayCount state since we show all articles
+  const [displayCount, setDisplayCount] = useState(30); // Display count state
 
-  // 로컬/배포 환경에 따라 API 주소 결정
-  const apiBaseUrl = process.env.NODE_ENV === 'production' 
-    ? 'https://newsarchive-ruby.vercel.app/' 
-    : 'http://localhost:3000';
+  // 동적으로 API 주소 결정
+  const getApiBaseUrl = () => {
+    // 환경 변수가 있으면 사용
+    if (process.env.NEXT_PUBLIC_API_URL) {
+      return process.env.NEXT_PUBLIC_API_URL;
+    }
+    
+    // 프로덕션 환경에서는 현재 도메인 사용
+    if (process.env.NODE_ENV === 'production') {
+      // 현재 도메인을 기반으로 API URL 생성
+      const protocol = window.location.protocol;
+      const host = window.location.host;
+      return `${protocol}//${host}`;
+    }
+    
+    // 개발 환경에서는 localhost 사용
+    return 'http://localhost:3000';
+  };
+
+  const apiBaseUrl = getApiBaseUrl();
 
   // 시간을 미국 동부 시간으로 표시하는 함수
   const getEasternTimeNow = () => {
@@ -50,6 +66,13 @@ export default function HomePage() {
       const filtered = newsData.filter(item => item.category === category);
       setFilteredNews(filtered);
     }
+    // Reset display count when category changes
+    setDisplayCount(30);
+  };
+
+  // Load more articles function
+  const loadMoreArticles = () => {
+    setDisplayCount(prev => prev + 30);
   };
 
   const loadAllNews = async () => {
@@ -130,6 +153,10 @@ export default function HomePage() {
     };
   }, [autoRefresh, apiBaseUrl]); // autoRefresh와 apiBaseUrl이 변경될 때마다 useEffect 재실행
 
+  // Get displayed news based on current filter and display count
+  const displayedNews = filteredNews.slice(0, displayCount);
+  const hasMoreNews = filteredNews.length > displayCount;
+
   return (
     <>
       <div className="container">
@@ -203,10 +230,10 @@ export default function HomePage() {
           </div>
         </div>
 
-                <div id="news-list">
-          {filteredNews.length > 0 ? (
+        <div id="news-list">
+          {displayedNews.length > 0 ? (
             <>
-              {filteredNews.map((item, index) => (
+              {displayedNews.map((item, index) => (
                 <div key={index} className="news-item">
                   <a href={item.link} target="_blank" rel="noopener noreferrer" className="news-link">
                     <div className="news-title">{item.title}</div>
@@ -232,7 +259,15 @@ export default function HomePage() {
                 </div>
               ))}
               
-                             {/* All articles are displayed */}
+              {/* Load More Button */}
+              {hasMoreNews && (
+                <div className="load-more-container">
+                  <button className="load-more-btn" onClick={loadMoreArticles}>
+                    <span className="load-more-icon">⬇</span>
+                    Load More Articles ({filteredNews.length - displayCount} remaining)
+                  </button>
+                </div>
+              )}
             </>
           ) : (
             <div className="empty-state">
