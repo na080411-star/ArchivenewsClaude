@@ -116,32 +116,13 @@ header {
     color: white;
     padding: 2px 8px;
     border-radius: 12px;
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: 600;
     margin-right: 8px;
+    white-space: nowrap;
 }
 
-.generate-summary-btn {
-    background: rgba(102, 126, 234, 0.2);
-    border: 1px solid rgba(102, 126, 234, 0.4);
-    color: #667eea;
-    padding: 6px 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.8rem;
-    margin-top: 10px;
-    transition: all 0.2s ease;
-}
 
-.generate-summary-btn:hover {
-    background: rgba(102, 126, 234, 0.3);
-    border-color: rgba(102, 126, 234, 0.6);
-}
-
-.generate-summary-btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
 
 .refresh-btn {
     background: rgba(255, 255, 255, 0.15);
@@ -237,8 +218,4 @@ header {
     .status-bar { flex-direction: column; gap: 15px; }
     .update-section { flex-direction: column; gap: 10px; }
     .news-meta { flex-direction: column; gap: 10px; align-items: flex-start; }
-    .generate-summary-btn { 
-        width: 100%; 
-        margin-top: 8px; 
-    }
 }

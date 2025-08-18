@@ -9,8 +9,7 @@ export default function HomePage() {
   const [lastUpdate, setLastUpdate] = useState('Ready...');
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [stats, setStats] = useState(null);
-  const [showAISummary, setShowAISummary] = useState(true);
-  const [summarizing, setSummarizing] = useState({});
+  const [showSmartSummary, setShowSmartSummary] = useState(true);
 
   // 로컬/배포 환경에 따라 API 주소 결정
   const apiBaseUrl = process.env.NODE_ENV === 'production' 
@@ -35,37 +34,7 @@ export default function HomePage() {
     return `${days} days ago`;
   };
 
-  // AI 요약 생성 함수
-  const generateAISummary = async (index, title, summary) => {
-    if (summarizing[index]) return; // 이미 요약 중이면 중복 요청 방지
-    
-    setSummarizing(prev => ({ ...prev, [index]: true }));
-    
-    try {
-      const response = await fetch(`${apiBaseUrl}/api/summarize`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          title: title,
-          text: summary,
-        }),
-      });
 
-      if (response.ok) {
-        const data = await response.json();
-        
-        setNewsData(prev => prev.map((item, i) => 
-          i === index ? { ...item, aiSummary: data.summary } : item
-        ));
-      }
-    } catch (error) {
-      console.error('AI summary generation failed:', error);
-    } finally {
-      setSummarizing(prev => ({ ...prev, [index]: false }));
-    }
-  };
 
   const loadAllNews = async () => {
     setStatusText('Fetching news from 50+ sources...');
@@ -104,7 +73,8 @@ export default function HomePage() {
 
   useEffect(() => {
     loadAllNews();
-    const interval = setInterval(loadAllNews, 10 * 60 * 1000);
+    // 10초마다 서버에서 최신 뉴스 가져오기
+    const interval = setInterval(loadAllNews, 10 * 1000);
     return () => clearInterval(interval);
   }, []);
 
@@ -134,10 +104,10 @@ export default function HomePage() {
               <label className="toggle-label">
                 <input
                   type="checkbox"
-                  checked={showAISummary}
-                  onChange={(e) => setShowAISummary(e.target.checked)}
+                  checked={showSmartSummary}
+                  onChange={(e) => setShowSmartSummary(e.target.checked)}
                 />
-                <span className="toggle-text">🤖 AI 요약</span>
+                <span className="toggle-text">🤖 Smart Summary (Auto-generated)</span>
               </label>
             </div>
             <button className="refresh-btn" onClick={loadAllNews} disabled={isRefreshing}>
@@ -154,29 +124,13 @@ export default function HomePage() {
                 <a href={item.link} target="_blank" rel="noopener noreferrer" className="news-link">
                   <div className="news-title">{item.title}</div>
                   
-                  {/* AI 요약 또는 원본 요약 표시 */}
-                  {showAISummary ? (
+                  {/* Smart Summary or Original Summary Display */}
+                  {showSmartSummary ? (
                     <div className="news-summary-container">
-                      {item.aiSummary ? (
-                        <div className="news-summary ai-summary">
-                          <span className="ai-badge">🤖 AI 요약</span>
-                          {item.aiSummary}
-                        </div>
-                      ) : (
-                        <div className="news-summary">
-                          {item.summary}
-                          <button 
-                            className="generate-summary-btn"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              generateAISummary(index, item.title, item.summary);
-                            }}
-                            disabled={summarizing[index]}
-                          >
-                            {summarizing[index] ? '🤖 요약 중...' : '🤖 AI 요약 생성'}
-                          </button>
-                        </div>
-                      )}
+                      <div className="news-summary ai-summary">
+                        <span className="ai-badge">🤖 Smart Summary</span>
+                        {item.aiSummary || item.summary}
+                      </div>
                     </div>
                   ) : (
                     <div className="news-summary">{item.summary}</div>

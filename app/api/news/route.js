@@ -3,6 +3,76 @@ import Parser from 'rss-parser';
 
 const parser = new Parser();
 
+// Cache for storing news data
+let newsCache = {
+  data: [],
+  stats: null,
+  lastUpdate: null,
+  isUpdating: false
+};
+
+// Cache duration: 30 seconds
+const CACHE_DURATION = 30 * 1000;
+
+// Smart Summary Function (AI-like effect)
+function generateSmartSummary(text, maxLength = 150) {
+  if (!text || text.length === 0) {
+    return 'No content to summarize.';
+  }
+
+  // Remove HTML tags
+  const cleanText = text.replace(/<[^>]*>/g, '');
+  
+  // Split into sentences and calculate importance
+  const sentences = cleanText.split(/[.!?]+/).filter(s => s.trim().length > 10);
+  
+  if (sentences.length === 0) {
+    return cleanText.substring(0, maxLength) + (cleanText.length > maxLength ? '...' : '');
+  }
+
+  // Keyword-based importance calculation
+  const keywords = ['announced', 'launched', 'released', 'introduced', 'developed', 'created', 'found', 'discovered', 'revealed', 'confirmed', 'reported', 'stated', 'said', 'according', 'study', 'research', 'analysis', 'data', 'results', 'findings', 'new', 'latest', 'breakthrough', 'innovation', 'technology', 'scientists', 'experts', 'officials', 'government', 'company', 'industry'];
+  
+  let bestSentence = sentences[0];
+  let bestScore = 0;
+  
+  sentences.forEach(sentence => {
+    const lowerSentence = sentence.toLowerCase();
+    let score = 0;
+    
+    // Keyword matching score
+    keywords.forEach(keyword => {
+      if (lowerSentence.includes(keyword)) {
+        score += 2;
+      }
+    });
+    
+    // Length score (prefer moderate length)
+    if (sentence.length > 50 && sentence.length < 200) {
+      score += 1;
+    }
+    
+    // First sentence bonus
+    if (sentence === sentences[0]) {
+      score += 1;
+    }
+    
+    if (score > bestScore) {
+      bestScore = score;
+      bestSentence = sentence;
+    }
+  });
+  
+  let summary = bestSentence.trim();
+  
+  // Adjust length
+  if (summary.length > maxLength) {
+    summary = summary.substring(0, maxLength - 3) + '...';
+  }
+  
+  return summary;
+}
+
 const newsSources = [
   { name: 'BBC News', url: 'http://feeds.bbci.co.uk/news/rss.xml' },
   { name: 'BBC Sport', url: 'http://feeds.bbci.co.uk/sport/rss.xml' },
@@ -64,24 +134,13 @@ const newsSources = [
   { name: 'BBC Business', url: 'http://feeds.bbci.co.uk/news/business/rss.xml' }
 ];
 
-
-export async function OPTIONS() {
-  return new NextResponse(null, {
-    status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    },
-  });
-}
-
-export async function GET() {
+// Fetch all news from RSS sources
+async function fetchAllNews() {
   const allNews = [];
   const successfulSources = [];
   const failedSources = [];
 
-  // 타임아웃을 설정한 fetch 함수
+  // Timeout-enabled fetch function
   const fetchWithTimeout = async (url, timeout = 10000) => {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
@@ -102,7 +161,7 @@ export async function GET() {
     }
   };
 
-  // 각 뉴스 소스를 병렬로 처리하되, 개별 타임아웃 적용
+  // Process each news source in parallel with individual timeout
   const promises = newsSources.map(async (source) => {
     try {
       console.log(`Fetching from ${source.name}...`);
@@ -125,12 +184,15 @@ export async function GET() {
         throw new Error('No items found in RSS feed');
       }
 
-      const items = feed.items.slice(0, 10); // 각 소스당 최대 10개 아이템만 가져오기
+      const items = feed.items.slice(0, 10); // Maximum 10 items per source
 
       items.forEach(item => {
         if (item.title && item.link) {
-          // 기존 요약과 AI 요약을 모두 저장
+          // Store original summary and auto-generate AI summary
           const originalSummary = item.contentSnippet || item.content || '';
+          
+          // Auto-generate AI summary
+          const smartSummary = generateSmartSummary(`${item.title}. ${originalSummary}`, 150);
           
           allNews.push({
             title: item.title,
@@ -138,7 +200,7 @@ export async function GET() {
             source: source.name,
             pubDate: item.pubDate || new Date().toISOString(),
             summary: originalSummary,
-            aiSummary: null, // 나중에 AI 요약으로 업데이트
+            aiSummary: smartSummary, // Auto-generated AI summary
           });
         }
       });
@@ -152,23 +214,23 @@ export async function GET() {
     }
   });
 
-  // 모든 요청을 병렬로 실행하고 완료될 때까지 대기
+  // Wait for all requests to complete
   await Promise.allSettled(promises);
 
-  // 결과 로깅
+  // Log results
   console.log(`📊 Fetch Summary: ${successfulSources.length}/${newsSources.length} sources successful`);
   if (failedSources.length > 0) {
     console.log('❌ Failed sources:', failedSources.map(f => f.name).join(', '));
   }
 
-  // 날짜별로 정렬하고 중복 제거
+  // Remove duplicates and sort by date
   const uniqueNews = allNews.filter((item, index, self) => 
     index === self.findIndex(t => t.title === item.title && t.source === item.source)
   );
 
   const sortedNews = uniqueNews.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
 
-  return NextResponse.json({
+  return {
     news: sortedNews,
     stats: {
       totalSources: newsSources.length,
@@ -177,6 +239,64 @@ export async function GET() {
       totalArticles: sortedNews.length,
       timestamp: new Date().toISOString()
     }
+  };
+}
+
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    },
+  });
+}
+
+export async function GET() {
+  const now = Date.now();
+  
+  // Check if cache is valid (less than 30 seconds old)
+  if (newsCache.data.length > 0 && 
+      newsCache.lastUpdate && 
+      (now - newsCache.lastUpdate) < CACHE_DURATION) {
+    console.log('📦 Returning cached news data');
+    return NextResponse.json({
+      news: newsCache.data,
+      stats: newsCache.stats
+    }, {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      },
+    });
+  }
+
+  // If cache is invalid or empty, fetch new data
+  if (!newsCache.isUpdating) {
+    newsCache.isUpdating = true;
+    
+    try {
+      console.log('🔄 Fetching fresh news data...');
+      const result = await fetchAllNews();
+      
+      // Update cache
+      newsCache.data = result.news;
+      newsCache.stats = result.stats;
+      newsCache.lastUpdate = now;
+      
+      console.log('✅ Cache updated successfully');
+    } catch (error) {
+      console.error('❌ Error updating cache:', error);
+    } finally {
+      newsCache.isUpdating = false;
+    }
+  }
+
+  return NextResponse.json({
+    news: newsCache.data,
+    stats: newsCache.stats
   }, {
     headers: {
       'Access-Control-Allow-Origin': '*',
