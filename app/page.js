@@ -13,6 +13,7 @@ export default function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [filteredNews, setFilteredNews] = useState([]);
   const [autoRefresh, setAutoRefresh] = useState(true); // Auto-refresh state
+  const [displayCount, setDisplayCount] = useState(30); // Number of articles to display
 
   // 로컬/배포 환경에 따라 API 주소 결정
   const apiBaseUrl = process.env.NODE_ENV === 'production' 
@@ -49,6 +50,13 @@ export default function HomePage() {
       const filtered = newsData.filter(item => item.category === category);
       setFilteredNews(filtered);
     }
+    // Reset display count when changing category
+    setDisplayCount(30);
+  };
+
+  // Load more articles function
+  const loadMoreArticles = () => {
+    setDisplayCount(prev => prev + 30);
   };
 
   const loadAllNews = async () => {
@@ -182,33 +190,45 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div id="news-list">
+                <div id="news-list">
           {filteredNews.length > 0 ? (
-            filteredNews.map((item, index) => (
-              <div key={index} className="news-item">
-                <a href={item.link} target="_blank" rel="noopener noreferrer" className="news-link">
-                  <div className="news-title">{item.title}</div>
-                  
-                  {/* Smart Summary or Original Summary Display */}
-                  {showSmartSummary ? (
-                    <div className="news-summary-container">
-                      <div className="news-summary ai-summary">
-                        <span className="summary-badge">🤖 Smart Summary</span>
-                        {item.aiSummary || item.summary}
+            <>
+              {filteredNews.slice(0, displayCount).map((item, index) => (
+                <div key={index} className="news-item">
+                  <a href={item.link} target="_blank" rel="noopener noreferrer" className="news-link">
+                    <div className="news-title">{item.title}</div>
+                    
+                    {/* Smart Summary or Original Summary Display */}
+                    {showSmartSummary ? (
+                      <div className="news-summary-container">
+                        <div className="news-summary ai-summary">
+                          <span className="summary-badge">🤖 Smart Summary</span>
+                          {item.aiSummary || item.summary}
+                        </div>
                       </div>
+                    ) : (
+                      <div className="news-summary">{item.summary}</div>
+                    )}
+                    
+                    <div className="news-meta">
+                      <span className="news-source">{item.source}</span>
+                      <span className="news-category">{item.category}</span>
+                      <span className="news-time">{getRelativeTime(item.pubDate)}</span>
                     </div>
-                  ) : (
-                    <div className="news-summary">{item.summary}</div>
-                  )}
-                  
-                                     <div className="news-meta">
-                     <span className="news-source">{item.source}</span>
-                     <span className="news-category">{item.category}</span>
-                     <span className="news-time">{getRelativeTime(item.pubDate)}</span>
-                   </div>
-                </a>
-              </div>
-            ))
+                  </a>
+                </div>
+              ))}
+              
+              {/* Load More Button */}
+              {displayCount < filteredNews.length && (
+                <div className="load-more-container">
+                  <button className="load-more-btn" onClick={loadMoreArticles}>
+                    <span className="load-more-icon">⬇️</span>
+                    Load More Articles ({filteredNews.length - displayCount} remaining)
+                  </button>
+                </div>
+              )}
+            </>
           ) : (
             <div className="empty-state">
               <div className="empty-state-icon">🌐</div>
