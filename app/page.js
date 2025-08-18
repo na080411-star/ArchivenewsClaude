@@ -270,6 +270,7 @@ export default function HomePage() {
                   adSlot="XXXXXXXXXX" // 실제 광고 슬롯 ID로 변경
                   format="auto"
                   responsive={true}
+                  style={{ minHeight: '9px' }}
                 />
               )}
               
