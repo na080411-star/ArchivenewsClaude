@@ -161,6 +161,18 @@ export default function HomePage() {
 
   return (
     <>
+      {/* TEST DUMMY TEXT - DEPLOYMENT TEST */}
+      <div style={{ 
+        background: 'red', 
+        color: 'white', 
+        padding: '10px', 
+        textAlign: 'center', 
+        fontSize: '18px',
+        fontWeight: 'bold'
+      }}>
+        🚀 TEST: newsarchive.net DOMAIN DEPLOYMENT SUCCESS! 🚀
+      </div>
+      
       <div className="container">
         <header>
           <h1 className="logo">ARCHIVE</h1>
@@ -172,7 +184,7 @@ export default function HomePage() {
 
         
 
-
+        
 
         <div className="status-bar">
           <div className="loading-indicator">
