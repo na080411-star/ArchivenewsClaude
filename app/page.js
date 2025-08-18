@@ -64,11 +64,25 @@ export default function HomePage() {
     setIsRefreshing(true);
 
     try {
-      const response = await fetch(`${apiBaseUrl}/api/news`, { cache: 'no-store' });
+      console.log('Attempting to fetch from:', `${apiBaseUrl}/api/news`);
+      
+      const response = await fetch(`${apiBaseUrl}/api/news`, { 
+        cache: 'no-store',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      console.log('Response status:', response.status);
+      console.log('Response ok:', response.ok);
+      
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
+      
       const data = await response.json();
+      console.log('Received data:', data);
       
       // 새로운 API 응답 구조 처리
       const newsItems = data.news || data;
@@ -96,7 +110,7 @@ export default function HomePage() {
       console.error('Failed to fetch from backend:', error);
       setNewsData([]);
       setFilteredNews([]);
-      setStatusText('An error occurred while refreshing.');
+      setStatusText(`Error: ${error.message}. Please check if the server is running.`);
       setLastUpdate('Failed to update');
     } finally {
       setIsRefreshing(false);
