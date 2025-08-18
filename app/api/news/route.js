@@ -355,10 +355,10 @@ async function fetchAllNews() {
            // Classify article category
            const category = classifyArticle(item.title, originalSummary);
            
-           allNews.push({
-             title: item.title,
-             link: item.link,
-             source: source.name,
+        allNews.push({
+          title: item.title,
+          link: item.link,
+          source: source.name,
              pubDate: item.pubDate || new Date().toISOString(),
              summary: originalSummary,
              aiSummary: twoSentenceSummary, // Auto-generated two sentence summary
