@@ -9,6 +9,8 @@ export default function HomePage() {
   const [lastUpdate, setLastUpdate] = useState('Ready...');
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [stats, setStats] = useState(null);
+  const [showAISummary, setShowAISummary] = useState(true);
+  const [summarizing, setSummarizing] = useState({});
 
   // 로컬/배포 환경에 따라 API 주소 결정
   const apiBaseUrl = process.env.NODE_ENV === 'production' 
@@ -31,6 +33,38 @@ export default function HomePage() {
     if (minutes < 60) return `${minutes} min ago`;
     if (hours < 24) return `${hours} hours ago`;
     return `${days} days ago`;
+  };
+
+  // AI 요약 생성 함수
+  const generateAISummary = async (index, title, summary) => {
+    if (summarizing[index]) return; // 이미 요약 중이면 중복 요청 방지
+    
+    setSummarizing(prev => ({ ...prev, [index]: true }));
+    
+    try {
+      const response = await fetch(`${apiBaseUrl}/api/summarize`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: title,
+          text: summary,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        
+        setNewsData(prev => prev.map((item, i) => 
+          i === index ? { ...item, aiSummary: data.summary } : item
+        ));
+      }
+    } catch (error) {
+      console.error('AI summary generation failed:', error);
+    } finally {
+      setSummarizing(prev => ({ ...prev, [index]: false }));
+    }
   };
 
   const loadAllNews = async () => {
@@ -96,6 +130,16 @@ export default function HomePage() {
                 </span>
               </div>
             )}
+            <div className="summary-toggle">
+              <label className="toggle-label">
+                <input
+                  type="checkbox"
+                  checked={showAISummary}
+                  onChange={(e) => setShowAISummary(e.target.checked)}
+                />
+                <span className="toggle-text">🤖 AI 요약</span>
+              </label>
+            </div>
             <button className="refresh-btn" onClick={loadAllNews} disabled={isRefreshing}>
               <span className={`refresh-icon ${isRefreshing ? 'spinning' : ''}`}>🔄</span>
               {isRefreshing ? 'Refreshing...' : 'Refresh'}
@@ -109,7 +153,35 @@ export default function HomePage() {
               <div key={index} className="news-item">
                 <a href={item.link} target="_blank" rel="noopener noreferrer" className="news-link">
                   <div className="news-title">{item.title}</div>
-                  <div className="news-summary">{item.summary}</div>
+                  
+                  {/* AI 요약 또는 원본 요약 표시 */}
+                  {showAISummary ? (
+                    <div className="news-summary-container">
+                      {item.aiSummary ? (
+                        <div className="news-summary ai-summary">
+                          <span className="ai-badge">🤖 AI 요약</span>
+                          {item.aiSummary}
+                        </div>
+                      ) : (
+                        <div className="news-summary">
+                          {item.summary}
+                          <button 
+                            className="generate-summary-btn"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              generateAISummary(index, item.title, item.summary);
+                            }}
+                            disabled={summarizing[index]}
+                          >
+                            {summarizing[index] ? '🤖 요약 중...' : '🤖 AI 요약 생성'}
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="news-summary">{item.summary}</div>
+                  )}
+                  
                   <div className="news-meta">
                     <span className="news-source">{item.source}</span>
                     <span className="news-time">{getRelativeTime(item.pubDate)}</span>

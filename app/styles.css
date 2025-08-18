@@ -77,6 +77,72 @@ header {
     font-weight: 500;
 }
 
+.summary-toggle {
+    display: flex;
+    align-items: center;
+}
+
+.toggle-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem;
+}
+
+.toggle-label input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #667eea;
+}
+
+.toggle-text {
+    font-weight: 500;
+}
+
+.news-summary-container {
+    position: relative;
+}
+
+.ai-summary {
+    background: rgba(102, 126, 234, 0.1);
+    border-left: 3px solid #667eea;
+    padding-left: 15px;
+}
+
+.ai-badge {
+    background: #667eea;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    margin-right: 8px;
+}
+
+.generate-summary-btn {
+    background: rgba(102, 126, 234, 0.2);
+    border: 1px solid rgba(102, 126, 234, 0.4);
+    color: #667eea;
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    margin-top: 10px;
+    transition: all 0.2s ease;
+}
+
+.generate-summary-btn:hover {
+    background: rgba(102, 126, 234, 0.3);
+    border-color: rgba(102, 126, 234, 0.6);
+}
+
+.generate-summary-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 .refresh-btn {
     background: rgba(255, 255, 255, 0.15);
     border: 1px solid rgba(255, 255, 255, 0.3);
@@ -171,4 +237,8 @@ header {
     .status-bar { flex-direction: column; gap: 15px; }
     .update-section { flex-direction: column; gap: 10px; }
     .news-meta { flex-direction: column; gap: 10px; align-items: flex-start; }
+    .generate-summary-btn { 
+        width: 100%; 
+        margin-top: 8px; 
+    }
 }

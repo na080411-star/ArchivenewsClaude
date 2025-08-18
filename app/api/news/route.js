@@ -129,12 +129,16 @@ export async function GET() {
 
       items.forEach(item => {
         if (item.title && item.link) {
+          // 기존 요약과 AI 요약을 모두 저장
+          const originalSummary = item.contentSnippet || item.content || '';
+          
           allNews.push({
             title: item.title,
             link: item.link,
             source: source.name,
             pubDate: item.pubDate || new Date().toISOString(),
-            summary: item.contentSnippet || item.content || '',
+            summary: originalSummary,
+            aiSummary: null, // 나중에 AI 요약으로 업데이트
           });
         }
       });
