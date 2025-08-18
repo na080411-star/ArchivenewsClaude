@@ -15,26 +15,10 @@ export default function HomePage() {
   const [autoRefresh, setAutoRefresh] = useState(true); // Auto-refresh state
   const [displayCount, setDisplayCount] = useState(30); // Display count state
 
-  // 동적으로 API 주소 결정
-  const getApiBaseUrl = () => {
-    // 환경 변수가 있으면 사용
-    if (process.env.NEXT_PUBLIC_API_URL) {
-      return process.env.NEXT_PUBLIC_API_URL;
-    }
-    
-    // 프로덕션 환경에서는 현재 도메인 사용
-    if (process.env.NODE_ENV === 'production') {
-      // 현재 도메인을 기반으로 API URL 생성
-      const protocol = window.location.protocol;
-      const host = window.location.host;
-      return `${protocol}//${host}`;
-    }
-    
-    // 개발 환경에서는 localhost 사용
-    return 'http://localhost:3000';
-  };
-
-  const apiBaseUrl = getApiBaseUrl();
+  // 로컬/배포 환경에 따라 API 주소 결정
+  const apiBaseUrl = process.env.NODE_ENV === 'production' 
+    ? 'https://newsarchive-ruby.vercel.app/' 
+    : 'http://localhost:3000';
 
   // 시간을 미국 동부 시간으로 표시하는 함수
   const getEasternTimeNow = () => {
