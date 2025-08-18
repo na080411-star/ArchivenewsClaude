@@ -103,9 +103,13 @@ export default function HomePage() {
       if (selectedCategory) {
         const filtered = sanitizedNews.filter(item => item.category === selectedCategory);
         setFilteredNews(filtered);
+        // Auto-refresh 시에도 displayCount를 30으로 리셋 (카테고리 필터링 시)
+        setDisplayCount(30);
         console.log(`Category filter applied: ${selectedCategory}, filtered articles: ${filtered.length}`);
       } else {
         setFilteredNews(sanitizedNews);
+        // Auto-refresh 시에도 displayCount를 30으로 리셋 (전체 보기 시)
+        setDisplayCount(30);
         console.log(`No category filter, total articles: ${sanitizedNews.length}`);
       }
       
@@ -142,10 +146,8 @@ export default function HomePage() {
   }, [autoRefresh, apiBaseUrl]); // autoRefresh와 apiBaseUrl이 변경될 때마다 useEffect 재실행
 
   // Get displayed news based on current filter and display count
-  // displayCount가 filteredNews.length보다 클 경우 조정
-  const adjustedDisplayCount = Math.min(displayCount, filteredNews.length);
-  const displayedNews = filteredNews.slice(0, adjustedDisplayCount);
-  const hasMoreNews = filteredNews.length > adjustedDisplayCount;
+  const displayedNews = filteredNews.slice(0, displayCount);
+  const hasMoreNews = filteredNews.length > displayCount;
   
   // Debug logging
   console.log('Debug Info:', {
@@ -153,8 +155,7 @@ export default function HomePage() {
     totalNews: newsData.length,
     filteredNews: filteredNews.length,
     displayCount,
-    adjustedDisplayCount,
-    remaining: filteredNews.length - adjustedDisplayCount,
+    remaining: filteredNews.length - displayCount,
     hasMoreNews
   });
 
@@ -265,7 +266,7 @@ export default function HomePage() {
                 <div className="load-more-container">
                   <button className="load-more-btn" onClick={loadMoreArticles}>
                     <span className="load-more-icon">⬇</span>
-                                         Load More Articles ({filteredNews.length - adjustedDisplayCount} remaining)
+                                         Load More Articles ({filteredNews.length - displayCount} remaining)
                   </button>
                 </div>
               )}
