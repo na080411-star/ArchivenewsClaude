@@ -335,6 +335,36 @@ header {
   }
 }
 
+/* Summary Info Styles */
+.summary-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #666;
+  padding: 8px 0;
+}
+
+.summary-text {
+  font-weight: 500;
+  color: #4a90e2;
+}
+
+/* Site Description Styles */
+.site-description {
+  text-align: center;
+  margin: 10px 0 20px 0;
+  padding: 15px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 8px;
+  font-size: 14px;
+  color: #666;
+  line-height: 1.5;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 /* 반응형 디자인 */
 @media (max-width: 768px) {
     .logo { font-size: 2.5rem; }
@@ -359,5 +389,14 @@ header {
     }
     .refresh-btn {
         justify-content: center;
+    }
+    .site-description {
+        margin: 10px 15px 20px 15px;
+        font-size: 13px;
+        padding: 12px;
+    }
+    .summary-info {
+        justify-content: center;
+        font-size: 13px;
     }
 }

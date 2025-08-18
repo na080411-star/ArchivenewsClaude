@@ -9,7 +9,7 @@ export default function HomePage() {
   const [lastUpdate, setLastUpdate] = useState('Ready...');
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [stats, setStats] = useState(null);
-  const [showSmartSummary, setShowSmartSummary] = useState(true);
+
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [filteredNews, setFilteredNews] = useState([]);
   const [autoRefresh, setAutoRefresh] = useState(true); // Auto-refresh state
@@ -164,7 +164,10 @@ export default function HomePage() {
       <div className="container">
         <header>
           <h1 className="logo">ARCHIVE</h1>
-          <div className="subtitle">Global News Archive - Live News from Major Outlets</div>
+          <div className="subtitle">AI-Powered News Summarizer - Instant Summaries from Major Outlets</div>
+          <div className="site-description">
+            Get instant AI-generated summaries of the latest news. Our AI analyzes and condenses articles to save you time while keeping you informed.
+          </div>
         </header>
 
         <div className="status-bar">
@@ -181,15 +184,8 @@ export default function HomePage() {
                 </span>
               </div>
             )}
-            <div className="summary-toggle">
-              <label className="toggle-label">
-                <input
-                  type="checkbox"
-                  checked={showSmartSummary}
-                  onChange={(e) => setShowSmartSummary(e.target.checked)}
-                />
-                <span className="toggle-text">🤖 Smart Summary</span>
-              </label>
+            <div className="summary-info">
+              <span className="summary-text">🤖 AI-Powered News Summaries</span>
             </div>
             
             {/* Category Filter Buttons */}
@@ -240,17 +236,13 @@ export default function HomePage() {
                   <a href={item.link} target="_blank" rel="noopener noreferrer" className="news-link">
                     <div className="news-title">{item.title}</div>
                     
-                    {/* Smart Summary or Original Summary Display */}
-                    {showSmartSummary ? (
-                      <div className="news-summary-container">
-                        <div className="news-summary ai-summary">
-                          <span className="summary-badge">🤖 Smart Summary</span>
-                          {item.aiSummary || item.summary}
-                        </div>
+                    {/* AI Summary Display */}
+                    <div className="news-summary-container">
+                      <div className="news-summary ai-summary">
+                        <span className="summary-badge">🤖 AI Summary</span>
+                        {item.aiSummary || "AI summary not available"}
                       </div>
-                    ) : (
-                      <div className="news-summary">{item.summary}</div>
-                    )}
+                    </div>
                     
                     <div className="news-meta">
                       <span className="news-source">{item.source}</span>
