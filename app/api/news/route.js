@@ -176,7 +176,6 @@ const newsSources = [
   { name: 'Serious Eats - Recipes', url: 'http://feeds.feedburner.com/seriouseats/recipes' },
   { name: 'The Kitchn', url: 'https://www.thekitchn.com/main.rss' },
   { name: 'Stratechery', url: 'http://stratechery.com/feed/' },
-  { name: 'Slashdot', url: 'http://rss.slashdot.org/Slashdot/slashdotMain' },
   { name: 'Product Hunt', url: 'https://www.producthunt.com/feed' },
   { name: 'Wired', url: 'https://www.wired.com/feed/rss' },
   { name: 'MIT Technology Review', url: 'https://www.technologyreview.com/feed/' },
