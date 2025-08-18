@@ -42,15 +42,15 @@ export default function PrivacyPage() {
           </section>
 
           <section className="privacy-section">
-            <h2>3. Google AdSense</h2>
+            <h2>3. Advertising and Analytics</h2>
             <p>
-              Our website uses Google AdSense to display advertisements. Google AdSense may use cookies 
-              and web beacons to collect information, including your IP address, browser type, and 
-              pages visited, to provide personalized advertisements.
+              Our website may display advertisements and use analytics services to improve user experience. 
+              These services may use cookies and web beacons to collect information, including your IP address, 
+              browser type, and pages visited, to provide relevant content and analyze site usage.
             </p>
             <p>
-              You can opt out of personalized advertising by visiting 
-              <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer"> Google Ads Settings</a>.
+              We are committed to transparency in our advertising practices and will update this policy 
+              when we implement specific advertising services.
             </p>
           </section>
 
@@ -92,11 +92,11 @@ export default function PrivacyPage() {
               Disabling cookies may affect website functionality.
             </p>
             <h3>Types of Cookies We Use:</h3>
-            <ul>
-              <li><strong>Essential Cookies:</strong> Required for basic website functionality</li>
-              <li><strong>Analytics Cookies:</strong> Help us understand how visitors use our site</li>
-              <li><strong>Advertising Cookies:</strong> Used by Google AdSense to deliver relevant ads</li>
-            </ul>
+                         <ul>
+               <li><strong>Essential Cookies:</strong> Required for basic website functionality</li>
+               <li><strong>Analytics Cookies:</strong> Help us understand how visitors use our site</li>
+               <li><strong>Advertising Cookies:</strong> May be used for relevant advertising when implemented</li>
+             </ul>
           </section>
 
           <section className="privacy-section">
