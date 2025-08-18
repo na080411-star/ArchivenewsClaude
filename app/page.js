@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import AdBanner from './components/AdBanner';
 
 // 페이지 컴포넌트
 export default function HomePage() {
@@ -170,6 +171,14 @@ export default function HomePage() {
           </div>
         </header>
 
+        {/* Header Ad Banner */}
+        <AdBanner
+          adClient="ca-pub-1895301779178331"
+          adSlot="XXXXXXXXXX" // 실제 광고 슬롯 ID로 변경
+          format="auto"
+          responsive={true}
+        />
+
         <div className="status-bar">
           <div className="loading-indicator">
             <div className={`spinner ${!isRefreshing ? 'hidden' : ''}`} />
@@ -253,12 +262,22 @@ export default function HomePage() {
                 </div>
               ))}
               
+                            {/* Load More Ad Banner */}
+              {hasMoreNews && (
+                <AdBanner
+                  adClient="ca-pub-1895301779178331"
+                  adSlot="XXXXXXXXXX" // 실제 광고 슬롯 ID로 변경
+                  format="auto"
+                  responsive={true}
+                />
+              )}
+              
               {/* Load More Button */}
               {hasMoreNews && (
                 <div className="load-more-container">
                   <button className="load-more-btn" onClick={loadMoreArticles}>
                     <span className="load-more-icon">⬇</span>
-                                         Load More Articles ({filteredNews.length - displayCount} remaining)
+                     Load More Articles ({filteredNews.length - displayCount} remaining)
                   </button>
                 </div>
               )}

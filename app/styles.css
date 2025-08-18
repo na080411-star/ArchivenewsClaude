@@ -365,6 +365,27 @@ header {
   margin-right: auto;
 }
 
+/* Ad Banner Styles */
+.ad-banner {
+  text-align: center;
+  margin: 20px 0;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  min-height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ad-banner ins {
+  display: block !important;
+  width: 100%;
+  max-width: 728px;
+  margin: 0 auto;
+}
+
 /* 반응형 디자인 */
 @media (max-width: 768px) {
     .logo { font-size: 2.5rem; }
@@ -398,5 +419,13 @@ header {
     .summary-info {
         justify-content: center;
         font-size: 13px;
+    }
+    .ad-banner {
+        margin: 15px 0;
+        padding: 10px;
+        min-height: 60px;
+    }
+    .ad-banner ins {
+        max-width: 320px;
     }
 }
