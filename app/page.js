@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import AdBanner from './components/AdBanner';
 
 // 페이지 컴포넌트
 export default function HomePage() {
@@ -173,13 +172,7 @@ export default function HomePage() {
 
         
 
-        {/* Header Ad Banner */}
-        <AdBanner
-          adClient="ca-pub-1895301779178331"
-          adSlot="XXXXXXXXXX" // 실제 광고 슬롯 ID로 변경
-          format="auto"
-          responsive={true}
-        />
+
 
         <div className="status-bar">
           <div className="loading-indicator">
@@ -263,16 +256,7 @@ export default function HomePage() {
                 </div>
               ))}
               
-                            {/* Load More Ad Banner */}
-              {hasMoreNews && (
-                <AdBanner
-                  adClient="ca-pub-1895301779178331"
-                  adSlot="XXXXXXXXXX" // 실제 광고 슬롯 ID로 변경
-                  format="auto"
-                  responsive={true}
-                  style={{ minHeight: '2px' }}
-                />
-              )}
+
               
               {/* Load More Button */}
               {hasMoreNews && (
