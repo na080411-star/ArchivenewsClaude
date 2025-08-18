@@ -44,11 +44,13 @@ export default function HomePage() {
       // Double click - deselect category
       setSelectedCategory(null);
       setFilteredNews(newsData);
+      console.log(`Category deselected, showing all articles: ${newsData.length}`);
     } else {
       // Select new category
       setSelectedCategory(category);
       const filtered = newsData.filter(item => item.category === category);
       setFilteredNews(filtered);
+      console.log(`Category selected: ${category}, filtered articles: ${filtered.length}`);
     }
     // Reset display count when category changes
     setDisplayCount(30);
@@ -101,8 +103,10 @@ export default function HomePage() {
       if (selectedCategory) {
         const filtered = sanitizedNews.filter(item => item.category === selectedCategory);
         setFilteredNews(filtered);
+        console.log(`Category filter applied: ${selectedCategory}, filtered articles: ${filtered.length}`);
       } else {
         setFilteredNews(sanitizedNews);
+        console.log(`No category filter, total articles: ${sanitizedNews.length}`);
       }
       
       if (responseStats) {
@@ -140,6 +144,16 @@ export default function HomePage() {
   // Get displayed news based on current filter and display count
   const displayedNews = filteredNews.slice(0, displayCount);
   const hasMoreNews = filteredNews.length > displayCount;
+  
+  // Debug logging
+  console.log('Debug Info:', {
+    selectedCategory,
+    totalNews: newsData.length,
+    filteredNews: filteredNews.length,
+    displayCount,
+    remaining: filteredNews.length - displayCount,
+    hasMoreNews
+  });
 
   return (
     <>
