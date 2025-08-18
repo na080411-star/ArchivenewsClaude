@@ -10,6 +10,8 @@ export default function HomePage() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [stats, setStats] = useState(null);
   const [showSmartSummary, setShowSmartSummary] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [filteredNews, setFilteredNews] = useState([]);
 
   // 로컬/배포 환경에 따라 API 주소 결정
   const apiBaseUrl = process.env.NODE_ENV === 'production' 
@@ -36,6 +38,20 @@ export default function HomePage() {
 
 
 
+  // Category filter function
+  const handleCategoryClick = (category) => {
+    if (selectedCategory === category) {
+      // Double click - deselect category
+      setSelectedCategory(null);
+      setFilteredNews(newsData);
+    } else {
+      // Select new category
+      setSelectedCategory(category);
+      const filtered = newsData.filter(item => item.category === category);
+      setFilteredNews(filtered);
+    }
+  };
+
   const loadAllNews = async () => {
     setStatusText('Fetching news from 50+ sources...');
     setIsRefreshing(true);
@@ -54,6 +70,14 @@ export default function HomePage() {
       setNewsData(newsItems);
       setStats(responseStats);
       
+      // Apply category filter if selected
+      if (selectedCategory) {
+        const filtered = newsItems.filter(item => item.category === selectedCategory);
+        setFilteredNews(filtered);
+      } else {
+        setFilteredNews(newsItems);
+      }
+      
       if (responseStats) {
         setStatusText(`Loaded ${responseStats.totalArticles} articles from ${responseStats.successfulSources}/${responseStats.totalSources} sources`);
       } else {
@@ -64,6 +88,7 @@ export default function HomePage() {
     } catch (error) {
       console.error('Failed to fetch from backend:', error);
       setNewsData([]);
+      setFilteredNews([]);
       setStatusText('An error occurred while refreshing.');
       setLastUpdate('Failed to update');
     } finally {
@@ -110,6 +135,21 @@ export default function HomePage() {
                 <span className="toggle-text">🤖 Smart Summary (Auto-generated)</span>
               </label>
             </div>
+            
+            {/* Category Filter Buttons */}
+            {stats && stats.categoryStats && (
+              <div className="category-filters">
+                {Object.entries(stats.categoryStats).map(([category, count]) => (
+                  <button
+                    key={category}
+                    className={`category-btn ${selectedCategory === category ? 'active' : ''}`}
+                    onClick={() => handleCategoryClick(category)}
+                  >
+                    {category} ({count})
+                  </button>
+                ))}
+              </div>
+            )}
             <button className="refresh-btn" onClick={loadAllNews} disabled={isRefreshing}>
               <span className={`refresh-icon ${isRefreshing ? 'spinning' : ''}`}>🔄</span>
               {isRefreshing ? 'Refreshing...' : 'Refresh'}
@@ -118,8 +158,8 @@ export default function HomePage() {
         </div>
 
         <div id="news-list">
-          {newsData.length > 0 ? (
-            newsData.map((item, index) => (
+          {filteredNews.length > 0 ? (
+            filteredNews.map((item, index) => (
               <div key={index} className="news-item">
                 <a href={item.link} target="_blank" rel="noopener noreferrer" className="news-link">
                   <div className="news-title">{item.title}</div>
@@ -136,10 +176,11 @@ export default function HomePage() {
                     <div className="news-summary">{item.summary}</div>
                   )}
                   
-                  <div className="news-meta">
-                    <span className="news-source">{item.source}</span>
-                    <span className="news-time">{getRelativeTime(item.pubDate)}</span>
-                  </div>
+                                     <div className="news-meta">
+                     <span className="news-source">{item.source}</span>
+                     <span className="news-category">{item.category}</span>
+                     <span className="news-time">{getRelativeTime(item.pubDate)}</span>
+                   </div>
                 </a>
               </div>
             ))
