@@ -21,29 +21,29 @@ export default function ContactPage() {
           <section className="contact-section">
             <h2>Contact Information</h2>
             <div className="contact-methods">
-              <div className="contact-method">
-                <h3>📧 General Inquiries</h3>
-                <p><strong>Email:</strong> contact@newsarchive.com</p>
-                <p><strong>Response Time:</strong> Within 24-48 hours</p>
-              </div>
-              
-              <div className="contact-method">
-                <h3>🔒 Privacy & Data</h3>
-                <p><strong>Email:</strong> privacy@newsarchive.com</p>
-                <p><strong>Response Time:</strong> Within 48 hours</p>
-              </div>
-              
-              <div className="contact-method">
-                <h3>⚖️ Legal & Terms</h3>
-                <p><strong>Email:</strong> legal@newsarchive.com</p>
-                <p><strong>Response Time:</strong> Within 48 hours</p>
-              </div>
-              
-              <div className="contact-method">
-                <h3>🤖 Technical Support</h3>
-                <p><strong>Email:</strong> support@newsarchive.com</p>
-                <p><strong>Response Time:</strong> Within 24 hours</p>
-              </div>
+                             <div className="contact-method">
+                 <h3>📧 General Inquiries</h3>
+                 <p><strong>Email:</strong> na080411@gmail.com</p>
+                 <p><strong>Response Time:</strong> Within 24-48 hours</p>
+               </div>
+               
+               <div className="contact-method">
+                 <h3>🔒 Privacy & Data</h3>
+                 <p><strong>Email:</strong> na080411@gmail.com</p>
+                 <p><strong>Response Time:</strong> Within 48 hours</p>
+               </div>
+               
+               <div className="contact-method">
+                 <h3>⚖️ Legal & Terms</h3>
+                 <p><strong>Email:</strong> na080411@gmail.com</p>
+                 <p><strong>Response Time:</strong> Within 48 hours</p>
+               </div>
+               
+               <div className="contact-method">
+                 <h3>🤖 Technical Support</h3>
+                 <p><strong>Email:</strong> na080411@gmail.com</p>
+                 <p><strong>Response Time:</strong> Within 24 hours</p>
+               </div>
             </div>
           </section>
 
@@ -110,10 +110,10 @@ export default function ContactPage() {
 
           <section className="contact-section">
             <h2>Business Inquiries</h2>
-            <p>
-              For business partnerships, advertising opportunities, or media inquiries, 
-              please contact us at business@newsarchive.com
-            </p>
+                         <p>
+               For business partnerships, advertising opportunities, or media inquiries, 
+               please contact us at na080411@gmail.com
+             </p>
           </section>
         </div>
 

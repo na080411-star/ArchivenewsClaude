@@ -75,10 +75,10 @@ export default function AboutPage() {
               Have questions, suggestions, or feedback? We'd love to hear from you. 
               You can reach us through our contact form or by emailing us directly.
             </p>
-            <div className="contact-info">
-              <p><strong>Email:</strong> contact@newsarchive.com</p>
-              <p><strong>Response Time:</strong> Within 24-48 hours</p>
-            </div>
+                         <div className="contact-info">
+               <p><strong>Email:</strong> na080411@gmail.com</p>
+               <p><strong>Response Time:</strong> Within 24-48 hours</p>
+             </div>
           </section>
         </div>
 

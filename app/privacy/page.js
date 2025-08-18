@@ -129,10 +129,10 @@ export default function PrivacyPage() {
             <p>
               If you have any questions about this Privacy Policy, please contact us:
             </p>
-            <div className="contact-info">
-              <p><strong>Email:</strong> privacy@newsarchive.com</p>
-              <p><strong>Response Time:</strong> Within 48 hours</p>
-            </div>
+                         <div className="contact-info">
+               <p><strong>Email:</strong> na080411@gmail.com</p>
+               <p><strong>Response Time:</strong> Within 48 hours</p>
+             </div>
           </section>
         </div>
 
