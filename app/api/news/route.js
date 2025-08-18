@@ -173,7 +173,96 @@ const newsSources = [
   { name: 'Fox News', url: 'https://feeds.foxnews.com/foxnews/latest' },
   { name: 'Al Jazeera', url: 'https://www.aljazeera.com/xml/rss/all.xml' },
   { name: 'BBC Technology', url: 'http://feeds.bbci.co.uk/news/technology/rss.xml' },
-  { name: 'BBC Business', url: 'http://feeds.bbci.co.uk/news/business/rss.xml' }
+  { name: 'BBC Business', url: 'http://feeds.bbci.co.uk/news/business/rss.xml' },
+  { name: 'BBC Entertainment', url: 'http://feeds.bbci.co.uk/news/entertainment_and_arts/rss.xml' },
+  { name: 'BBC Health', url: 'http://feeds.bbci.co.uk/news/health/rss.xml' },
+  { name: 'BBC Science', url: 'http://feeds.bbci.co.uk/news/science_and_environment/rss.xml' },
+  { name: 'CNN Politics', url: 'http://rss.cnn.com/rss/edition_politics.rss' },
+  { name: 'CNN Entertainment', url: 'http://rss.cnn.com/rss/edition_entertainment.rss' },
+  { name: 'CNN Health', url: 'http://rss.cnn.com/rss/edition_health.rss' },
+  { name: 'CNN Science', url: 'http://rss.cnn.com/rss/edition_space.rss' },
+  { name: 'The Guardian Business', url: 'https://www.theguardian.com/business/rss' },
+  { name: 'The Guardian Politics', url: 'https://www.theguardian.com/politics/rss' },
+  { name: 'The Guardian Science', url: 'https://www.theguardian.com/science/rss' },
+  { name: 'The Guardian Health', url: 'https://www.theguardian.com/society/health/rss' },
+  { name: 'The Guardian Sports', url: 'https://www.theguardian.com/sport/rss' },
+  { name: 'The Guardian Entertainment', url: 'https://www.theguardian.com/culture/rss' },
+  { name: 'The New York Times - Politics', url: 'https://rss.nytimes.com/services/xml/rss/nyt/Politics.xml' },
+  { name: 'The New York Times - Health', url: 'https://rss.nytimes.com/services/xml/rss/nyt/Health.xml' },
+  { name: 'The New York Times - Sports', url: 'https://rss.nytimes.com/services/xml/rss/nyt/Sports.xml' },
+  { name: 'The New York Times - Arts', url: 'https://rss.nytimes.com/services/xml/rss/nyt/Arts.xml' },
+  { name: 'Reuters Technology', url: 'https://feeds.reuters.com/reuters/technologyNews' },
+  { name: 'Reuters Business', url: 'https://feeds.reuters.com/reuters/businessNews' },
+  { name: 'Reuters World', url: 'https://feeds.reuters.com/reuters/worldNews' },
+  { name: 'Reuters Politics', url: 'https://feeds.reuters.com/reuters/politicsNews' },
+  { name: 'Reuters Health', url: 'https://feeds.reuters.com/reuters/healthNews' },
+  { name: 'Reuters Science', url: 'https://feeds.reuters.com/reuters/scienceNews' },
+  { name: 'Reuters Sports', url: 'https://feeds.reuters.com/reuters/sportsNews' },
+  { name: 'Reuters Entertainment', url: 'https://feeds.reuters.com/reuters/entertainment' },
+  { name: 'Bloomberg Politics', url: 'https://feeds.bloomberg.com/politics/news.rss' },
+  { name: 'Bloomberg Markets', url: 'https://feeds.bloomberg.com/markets/news.rss' },
+  { name: 'Bloomberg Opinion', url: 'https://feeds.bloomberg.com/opinion/news.rss' },
+  { name: 'CNBC Politics', url: 'https://www.cnbc.com/id/10000113/device/rss/rss.html' },
+  { name: 'CNBC Markets', url: 'https://www.cnbc.com/id/10000664/device/rss/rss.html' },
+  { name: 'CNBC Investing', url: 'https://www.cnbc.com/id/100003114/device/rss/rss.html' },
+  { name: 'Forbes Politics', url: 'https://www.forbes.com/politics/feed/' },
+  { name: 'Forbes Markets', url: 'https://www.forbes.com/markets/feed/' },
+  { name: 'Forbes Innovation', url: 'https://www.forbes.com/innovation/feed/' },
+  { name: 'Wired Security', url: 'https://www.wired.com/feed/category/security/latest/rss' },
+  { name: 'Wired Science', url: 'https://www.wired.com/feed/category/science/latest/rss' },
+  { name: 'Wired Business', url: 'https://www.wired.com/feed/category/business/latest/rss' },
+  { name: 'Ars Technica Gaming', url: 'http://feeds.arstechnica.com/arstechnica/gaming' },
+  { name: 'Ars Technica Science', url: 'http://feeds.arstechnica.com/arstechnica/science' },
+  { name: 'TechCrunch Startups', url: 'http://feeds.feedburner.com/TechCrunch/startups' },
+  { name: 'TechCrunch Mobile', url: 'http://feeds.feedburner.com/TechCrunch/mobile' },
+  { name: 'TechCrunch Social', url: 'http://feeds.feedburner.com/TechCrunch/social' },
+  { name: 'Engadget Mobile', url: 'https://www.engadget.com/rss.xml' },
+  { name: 'Engadget Gaming', url: 'https://www.engadget.com/rss.xml' },
+  { name: 'Gizmodo Science', url: 'https://gizmodo.com/rss' },
+  { name: 'Gizmodo Gaming', url: 'https://gizmodo.com/rss' },
+  { name: 'Mashable Tech', url: 'https://mashable.com/feed' },
+  { name: 'Mashable Entertainment', url: 'https://mashable.com/feed' },
+  { name: 'Vox Politics', url: 'https://www.vox.com/rss/index.xml' },
+  { name: 'Vox Technology', url: 'https://www.vox.com/rss/index.xml' },
+  { name: 'The Atlantic Politics', url: 'https://www.theatlantic.com/feed/all/' },
+  { name: 'The Atlantic Technology', url: 'https://www.theatlantic.com/feed/all/' },
+  { name: 'MIT Technology Review AI', url: 'https://www.technologyreview.com/feed/' },
+  { name: 'MIT Technology Review Climate', url: 'https://www.technologyreview.com/feed/' },
+  { name: 'Scientific American Mind', url: 'http://rss.sciam.com/ScientificAmerican-Mind' },
+  { name: 'Scientific American Health', url: 'http://rss.sciam.com/ScientificAmerican-Health' },
+  { name: 'ScienceDaily Technology', url: 'https://www.sciencedaily.com/rss/computers_math/technology.xml' },
+  { name: 'ScienceDaily Health', url: 'https://www.sciencedaily.com/rss/health_medicine.xml' },
+  { name: 'ScienceDaily Environment', url: 'https://www.sciencedaily.com/rss/earth_climate/environment.xml' },
+  { name: 'NASA Earth', url: 'https://www.nasa.gov/rss/dyn/earth.rss' },
+  { name: 'NASA Solar System', url: 'https://www.nasa.gov/rss/dyn/solar_system.rss' },
+  { name: 'NASA Universe', url: 'https://www.nasa.gov/rss/dyn/universe.rss' },
+  { name: 'NPR Politics', url: 'https://feeds.npr.org/1014/rss.xml' },
+  { name: 'NPR Science', url: 'https://feeds.npr.org/1007/rss.xml' },
+  { name: 'NPR Health', url: 'https://feeds.npr.org/1128/rss.xml' },
+  { name: 'NPR Business', url: 'https://feeds.npr.org/1006/rss.xml' },
+  { name: 'NPR Entertainment', url: 'https://feeds.npr.org/1008/rss.xml' },
+  { name: 'The Washington Post Politics', url: 'https://feeds.washingtonpost.com/rss/politics' },
+  { name: 'The Washington Post Technology', url: 'https://feeds.washingtonpost.com/rss/business/technology' },
+  { name: 'The Washington Post Health', url: 'https://feeds.washingtonpost.com/rss/national/health-science' },
+  { name: 'The Washington Post Sports', url: 'https://feeds.washingtonpost.com/rss/sports' },
+  { name: 'USA Today Politics', url: 'https://rss.usatoday.com/usatoday-NewsTopStories' },
+  { name: 'USA Today Technology', url: 'https://rss.usatoday.com/usatoday-NewsTopStories' },
+  { name: 'USA Today Sports', url: 'https://rss.usatoday.com/usatoday-NewsTopStories' },
+  { name: 'NBC News Politics', url: 'https://feeds.nbcnews.com/nbcnews/public/politics' },
+  { name: 'NBC News Technology', url: 'https://feeds.nbcnews.com/nbcnews/public/tech' },
+  { name: 'NBC News Health', url: 'https://feeds.nbcnews.com/nbcnews/public/health' },
+  { name: 'ABC News Politics', url: 'https://abcnews.go.com/abcnews/politicsheadlines' },
+  { name: 'ABC News Technology', url: 'https://abcnews.go.com/abcnews/technologyheadlines' },
+  { name: 'ABC News Health', url: 'https://abcnews.go.com/abcnews/healthheadlines' },
+  { name: 'CBS News Politics', url: 'https://www.cbsnews.com/latest/rss/politics' },
+  { name: 'CBS News Technology', url: 'https://www.cbsnews.com/latest/rss/tech' },
+  { name: 'CBS News Health', url: 'https://www.cbsnews.com/latest/rss/health' },
+  { name: 'Fox News Politics', url: 'https://feeds.foxnews.com/foxnews/politics' },
+  { name: 'Fox News Technology', url: 'https://feeds.foxnews.com/foxnews/tech' },
+  { name: 'Fox News Health', url: 'https://feeds.foxnews.com/foxnews/health' },
+  { name: 'Al Jazeera Politics', url: 'https://www.aljazeera.com/xml/rss/politics.xml' },
+  { name: 'Al Jazeera Technology', url: 'https://www.aljazeera.com/xml/rss/technology.xml' },
+  { name: 'Al Jazeera Health', url: 'https://www.aljazeera.com/xml/rss/health.xml' }
 ];
 
 // Fetch all news from RSS sources
@@ -220,15 +309,18 @@ async function fetchAllNews() {
         throw new Error('Empty response');
       }
 
-      const feed = await parser.parseString(rssText);
+             const feed = await parser.parseString(rssText);
 
-      if (!feed.items || feed.items.length === 0) {
-        throw new Error('No items found in RSS feed');
-      }
+       if (!feed.items || feed.items.length === 0) {
+         throw new Error('No items found in RSS feed');
+       }
 
-      const items = feed.items.slice(0, 10); // Maximum 10 items per source
+       // Sort by date (newest first) and take latest 20 items
+       const sortedItems = feed.items
+         .sort((a, b) => new Date(b.pubDate || 0) - new Date(a.pubDate || 0))
+         .slice(0, 20);
 
-             items.forEach(item => {
+       sortedItems.forEach(item => {
          if (item.title && item.link) {
            // Store original summary and auto-generate AI summary
            const originalSummary = item.contentSnippet || item.content || '';
@@ -251,8 +343,8 @@ async function fetchAllNews() {
          }
        });
 
-      successfulSources.push(source.name);
-      console.log(`✅ Successfully fetched ${items.length} items from ${source.name}`);
+             successfulSources.push(source.name);
+       console.log(`✅ Successfully fetched ${sortedItems.length} items from ${source.name}`);
       
     } catch (error) {
       failedSources.push({ name: source.name, error: error.message });
@@ -265,8 +357,9 @@ async function fetchAllNews() {
 
   // Log results
   console.log(`📊 Fetch Summary: ${successfulSources.length}/${newsSources.length} sources successful`);
+  console.log(`📈 Total articles from RSS feeds: ${allNews.length}`);
   if (failedSources.length > 0) {
-    console.log('❌ Failed sources:', failedSources.map(f => f.name).join(', '));
+    console.log('❌ Failed sources:', failedSources.map(f => `${f.name} (${f.error})`).join(', '));
   }
 
   // Remove duplicates and sort by date
@@ -274,16 +367,22 @@ async function fetchAllNews() {
     index === self.findIndex(t => t.title === item.title && t.source === item.source)
   );
 
-  // Filter articles from last 7 days only
-  const oneWeekAgo = new Date();
-  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+  console.log(`🔄 Articles after removing duplicates: ${uniqueNews.length}`);
+
+  // Filter articles from last 14 days
+  const twoWeeksAgo = new Date();
+  twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
   
   const recentNews = uniqueNews.filter(item => {
     const pubDate = new Date(item.pubDate);
-    return pubDate >= oneWeekAgo;
+    return pubDate >= twoWeeksAgo;
   });
 
+  console.log(`📅 Articles after 14-day filter: ${recentNews.length}`);
+
   const sortedNews = recentNews.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+
+  console.log(`📅 Final articles after sorting: ${sortedNews.length}`);
 
   // Calculate category statistics
   const categoryStats = {};

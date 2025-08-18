@@ -12,6 +12,7 @@ export default function HomePage() {
   const [showSmartSummary, setShowSmartSummary] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [filteredNews, setFilteredNews] = useState([]);
+  const [autoRefresh, setAutoRefresh] = useState(true); // Auto-refresh state
 
   // 로컬/배포 환경에 따라 API 주소 결정
   const apiBaseUrl = process.env.NODE_ENV === 'production' 
@@ -35,8 +36,6 @@ export default function HomePage() {
     if (hours < 24) return `${hours} hours ago`;
     return `${days} days ago`;
   };
-
-
 
   // Category filter function
   const handleCategoryClick = (category) => {
@@ -98,10 +97,17 @@ export default function HomePage() {
 
   useEffect(() => {
     loadAllNews();
-    // 10초마다 서버에서 최신 뉴스 가져오기
-    const interval = setInterval(loadAllNews, 10 * 1000);
-    return () => clearInterval(interval);
-  }, []);
+    // Auto-refresh가 활성화된 경우에만 10초마다 서버에서 최신 뉴스 가져오기
+    let interval;
+    if (autoRefresh) {
+      interval = setInterval(loadAllNews, 10 * 1000);
+    }
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [autoRefresh]); // autoRefresh 상태가 변경될 때마다 useEffect 재실행
 
   return (
     <>
@@ -150,10 +156,22 @@ export default function HomePage() {
                 ))}
               </div>
             )}
-            <button className="refresh-btn" onClick={loadAllNews} disabled={isRefreshing}>
-              <span className={`refresh-icon ${isRefreshing ? 'spinning' : ''}`}>🔄</span>
-              {isRefreshing ? 'Refreshing...' : 'Refresh'}
-            </button>
+            
+            {/* Auto-refresh toggle and refresh button */}
+            <div className="refresh-controls">
+              <label className="auto-refresh-toggle">
+                <input
+                  type="checkbox"
+                  checked={autoRefresh}
+                  onChange={(e) => setAutoRefresh(e.target.checked)}
+                />
+                <span className="auto-refresh-text">🔄 Auto-refresh (10s)</span>
+              </label>
+              <button className="refresh-btn" onClick={loadAllNews} disabled={isRefreshing}>
+                <span className={`refresh-icon ${isRefreshing ? 'spinning' : ''}`}>🔄</span>
+                {isRefreshing ? 'Refreshing...' : 'Refresh'}
+              </button>
+            </div>
           </div>
         </div>
 
