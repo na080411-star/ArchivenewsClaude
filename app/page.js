@@ -13,7 +13,7 @@ export default function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [filteredNews, setFilteredNews] = useState([]);
   const [autoRefresh, setAutoRefresh] = useState(true); // Auto-refresh state
-  const [displayCount, setDisplayCount] = useState(30); // Number of articles to display
+  // Removed displayCount state since we show all articles
 
   // 로컬/배포 환경에 따라 API 주소 결정
   const apiBaseUrl = process.env.NODE_ENV === 'production' 
@@ -50,13 +50,6 @@ export default function HomePage() {
       const filtered = newsData.filter(item => item.category === category);
       setFilteredNews(filtered);
     }
-    // Reset display count when changing category
-    setDisplayCount(30);
-  };
-
-  // Load more articles function
-  const loadMoreArticles = () => {
-    setDisplayCount(prev => prev + 30);
   };
 
   const loadAllNews = async () => {
@@ -64,8 +57,6 @@ export default function HomePage() {
     setIsRefreshing(true);
 
     try {
-      console.log('Attempting to fetch from:', `${apiBaseUrl}/api/news`);
-      
       const response = await fetch(`${apiBaseUrl}/api/news`, { 
         cache: 'no-store',
         headers: {
@@ -74,29 +65,37 @@ export default function HomePage() {
         }
       });
       
-      console.log('Response status:', response.status);
-      console.log('Response ok:', response.ok);
-      
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
       
       const data = await response.json();
-      console.log('Received data:', data);
       
-      // 새로운 API 응답 구조 처리
-      const newsItems = data.news || data;
-      const responseStats = data.stats;
+      // Validate and sanitize data
+      const newsItems = Array.isArray(data.news || data) ? (data.news || data) : [];
+      const responseStats = data.stats || null;
       
-      setNewsData(newsItems);
+      // Sanitize news items to prevent XSS
+      const sanitizedNews = newsItems.map(item => ({
+        ...item,
+        title: item.title ? String(item.title).replace(/<[^>]*>/g, '') : '',
+        summary: item.summary ? String(item.summary).replace(/<[^>]*>/g, '') : '',
+        aiSummary: item.aiSummary ? String(item.aiSummary).replace(/<[^>]*>/g, '') : '',
+        source: item.source ? String(item.source).replace(/<[^>]*>/g, '') : '',
+        category: item.category ? String(item.category).replace(/<[^>]*>/g, '') : 'General',
+        link: item.link ? String(item.link) : '#',
+        pubDate: item.pubDate ? String(item.pubDate) : new Date().toISOString()
+      }));
+      
+      setNewsData(sanitizedNews);
       setStats(responseStats);
       
       // Apply category filter if selected
       if (selectedCategory) {
-        const filtered = newsItems.filter(item => item.category === selectedCategory);
+        const filtered = sanitizedNews.filter(item => item.category === selectedCategory);
         setFilteredNews(filtered);
       } else {
-        setFilteredNews(newsItems);
+        setFilteredNews(sanitizedNews);
       }
       
       if (responseStats) {
@@ -129,7 +128,7 @@ export default function HomePage() {
         clearInterval(interval);
       }
     };
-  }, [autoRefresh]); // autoRefresh 상태가 변경될 때마다 useEffect 재실행
+  }, [autoRefresh, apiBaseUrl]); // autoRefresh와 apiBaseUrl이 변경될 때마다 useEffect 재실행
 
   return (
     <>
@@ -207,7 +206,7 @@ export default function HomePage() {
                 <div id="news-list">
           {filteredNews.length > 0 ? (
             <>
-              {filteredNews.slice(0, displayCount).map((item, index) => (
+              {filteredNews.map((item, index) => (
                 <div key={index} className="news-item">
                   <a href={item.link} target="_blank" rel="noopener noreferrer" className="news-link">
                     <div className="news-title">{item.title}</div>
@@ -233,15 +232,7 @@ export default function HomePage() {
                 </div>
               ))}
               
-              {/* Load More Button */}
-              {displayCount < filteredNews.length && (
-                <div className="load-more-container">
-                  <button className="load-more-btn" onClick={loadMoreArticles}>
-                    <span className="load-more-icon">⬇️</span>
-                    Load More Articles ({filteredNews.length - displayCount} remaining)
-                  </button>
-                </div>
-              )}
+                             {/* All articles are displayed */}
             </>
           ) : (
             <div className="empty-state">

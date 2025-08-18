@@ -3,12 +3,25 @@ import Parser from 'rss-parser';
 
 const parser = new Parser();
 
-// Cache for storing news data
+// Cache for storing news data (module-level cache)
 let newsCache = {
   data: [],
   stats: null,
   lastUpdate: null,
   isUpdating: false
+};
+
+// Cache cleanup function to prevent memory leaks
+const cleanupCache = () => {
+  const now = Date.now();
+  if (newsCache.lastUpdate && (now - newsCache.lastUpdate) > 5 * 60 * 1000) { // 5 minutes
+    newsCache = {
+      data: [],
+      stats: null,
+      lastUpdate: null,
+      isUpdating: false
+    };
+  }
 };
 
 // Cache duration: 30 seconds
@@ -427,13 +440,65 @@ export async function OPTIONS() {
 }
 
 export async function GET() {
-  const now = Date.now();
-  
-  // Check if cache is valid (less than 30 seconds old)
-  if (newsCache.data.length > 0 && 
-      newsCache.lastUpdate && 
-      (now - newsCache.lastUpdate) < CACHE_DURATION) {
-    console.log('📦 Returning cached news data');
+  try {
+    const now = Date.now();
+    
+    // Cleanup old cache to prevent memory leaks
+    cleanupCache();
+    
+    // Check if cache is valid (less than 30 seconds old)
+    if (newsCache.data.length > 0 && 
+        newsCache.lastUpdate && 
+        (now - newsCache.lastUpdate) < CACHE_DURATION) {
+      console.log('📦 Returning cached news data');
+      return NextResponse.json({
+        news: newsCache.data,
+        stats: newsCache.stats
+      }, {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        },
+      });
+    }
+
+    // If cache is invalid or empty, fetch new data
+    if (!newsCache.isUpdating) {
+      newsCache.isUpdating = true;
+      
+      try {
+        console.log('🔄 Fetching fresh news data...');
+        const result = await fetchAllNews();
+        
+        // Update cache
+        newsCache.data = result.news;
+        newsCache.stats = result.stats;
+        newsCache.lastUpdate = now;
+        
+        console.log('✅ Cache updated successfully');
+      } catch (error) {
+        console.error('❌ Error updating cache:', error);
+        // Return cached data if available, otherwise return error
+        if (newsCache.data.length > 0) {
+          console.log('📦 Returning cached data due to fetch error');
+          return NextResponse.json({
+            news: newsCache.data,
+            stats: newsCache.stats
+          }, {
+            headers: {
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Methods': 'GET, OPTIONS',
+              'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+            },
+          });
+        }
+        throw error;
+      } finally {
+        newsCache.isUpdating = false;
+      }
+    }
+
     return NextResponse.json({
       news: newsCache.data,
       stats: newsCache.stats
@@ -444,37 +509,18 @@ export async function GET() {
         'Access-Control-Allow-Headers': 'Content-Type, Authorization',
       },
     });
+  } catch (error) {
+    console.error('❌ Fatal error in GET handler:', error);
+    return NextResponse.json({
+      error: 'Internal server error',
+      message: 'Failed to fetch news data'
+    }, {
+      status: 500,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      },
+    });
   }
-
-  // If cache is invalid or empty, fetch new data
-  if (!newsCache.isUpdating) {
-    newsCache.isUpdating = true;
-    
-    try {
-      console.log('🔄 Fetching fresh news data...');
-      const result = await fetchAllNews();
-      
-      // Update cache
-      newsCache.data = result.news;
-      newsCache.stats = result.stats;
-      newsCache.lastUpdate = now;
-      
-      console.log('✅ Cache updated successfully');
-    } catch (error) {
-      console.error('❌ Error updating cache:', error);
-    } finally {
-      newsCache.isUpdating = false;
-    }
-  }
-
-  return NextResponse.json({
-    news: newsCache.data,
-    stats: newsCache.stats
-  }, {
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    },
-  });
 }
