@@ -426,19 +426,22 @@ header {
 /* Header Ad - 최고 수익성 */
 .header-ad {
   margin: 20px 0 30px 0;
-  min-height: 90px;
+  min-height: 30px;
+  max-height: 30px;
 }
 
 /* Content Ad - 콘텐츠 중간 */
 .content-ad {
   margin: 30px 0;
-  min-height: 250px;
+  min-height: 83px;
+  max-height: 83px;
 }
 
 /* Footer Ad - 푸터 위 */
 .footer-ad {
   margin: 30px 0 20px 0;
-  min-height: 90px;
+  min-height: 30px;
+  max-height: 30px;
 }
 
 /* Sidebar Ad - 데스크톱 전용 */
@@ -467,21 +470,25 @@ header {
     margin: 15px 0;
     padding: 10px;
     min-height: 15px;
+    max-height: 15px;
   }
   
   .header-ad {
     margin: 15px 0 20px 0;
-    min-height: 60px;
+    min-height: 20px;
+    max-height: 20px;
   }
   
   .content-ad {
     margin: 20px 0;
-    min-height: 200px;
+    min-height: 67px;
+    max-height: 67px;
   }
   
   .footer-ad {
     margin: 20px 0 15px 0;
-    min-height: 60px;
+    min-height: 20px;
+    max-height: 20px;
   }
 }
 
