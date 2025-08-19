@@ -160,7 +160,7 @@ export default function HomePage() {
             <span id="status-text">{statusText}</span>
           </div>
           <div className="update-section">
-            <div id="last-update">Last Updated: {lastUpdate}</div>
+                         <div id="last-update">Last Updated: {lastUpdate} EST</div>
             {stats && (
               <div className="stats-info">
                 <span className="stats-text">
