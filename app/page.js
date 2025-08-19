@@ -252,11 +252,10 @@ export default function HomePage() {
                        </div>
                      </div>
                     
-                    <div className="news-meta">
-                      <span className="news-source">{item.source}</span>
-                      <span className="news-category">{item.category}</span>
-                      <span className="news-time">{getRelativeTime(item.pubDate)}</span>
-                    </div>
+                                         <div className="news-meta">
+                       <span className="news-source">{item.source}</span>
+                       <span className="news-time">{getRelativeTime(item.pubDate)}</span>
+                     </div>
                   </a>
                 </div>
               ))}
