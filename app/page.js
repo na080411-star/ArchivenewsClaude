@@ -184,6 +184,8 @@ export default function HomePage() {
         <AdBanner 
           adSlot="1234567890" 
           className="header-ad"
+          width="728"
+          height="90"
         />
 
         <div className="status-bar">
@@ -268,13 +270,15 @@ export default function HomePage() {
               
 
               
-                             {/* 콘텐츠 중간 광고 */}
-               {displayedNews.length >= 10 && (
-                 <AdBanner 
-                   adSlot="0987654321" 
-                   className="content-ad"
-                 />
-               )}
+                                             {/* 콘텐츠 중간 광고 */}
+                {displayedNews.length >= 10 && (
+                  <AdBanner 
+                    adSlot="0987654321" 
+                    className="content-ad"
+                    width="300"
+                    height="250"
+                  />
+                )}
 
                {/* Load More Button */}
                {hasMoreNews && (
@@ -295,11 +299,13 @@ export default function HomePage() {
         </div>
       </div>
       
-             {/* 푸터 광고 */}
-       <AdBanner 
-         adSlot="1122334455" 
-         className="footer-ad"
-       />
+                           {/* 푸터 광고 */}
+        <AdBanner 
+          adSlot="1122334455" 
+          className="footer-ad"
+          width="728"
+          height="90"
+        />
       
       {/* Footer for AdSense Compliance */}
       <footer className="site-footer">

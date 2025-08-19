@@ -7,7 +7,9 @@ export default function AdBanner({
   className = '', 
   style = {},
   format = 'auto',
-  responsive = true 
+  responsive = true,
+  width = '728',
+  height = '90'
 }) {
   useEffect(() => {
     try {
@@ -24,7 +26,7 @@ export default function AdBanner({
     <div className={`ad-banner ${className}`} style={style}>
       <ins
         className="adsbygoogle"
-        style={{ display: 'block' }}
+        style={{ display: 'block', width: `${width}px`, height: `${height}px` }}
         data-ad-client="ca-pub-1895301779178331"
         data-ad-slot={adSlot}
         data-ad-format={format}

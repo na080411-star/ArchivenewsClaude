@@ -429,22 +429,31 @@ header {
 /* Header Ad - 최고 수익성 */
 .header-ad {
   margin: 20px 0 30px 0;
-  min-height: 90px;
+  height: 90px;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Content Ad - 콘텐츠 중간 */
 .content-ad {
   margin: 30px 0;
-  min-height: 250px;
+  height: 250px;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Footer Ad - 푸터 위 */
 .footer-ad {
   margin: 30px 0 20px 0;
-  min-height: 90px;
+  height: 90px;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Sidebar Ad - 데스크톱 전용 */
