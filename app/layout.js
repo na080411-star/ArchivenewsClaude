@@ -1,7 +1,6 @@
 // app/layout.js
 
 import './styles.css';
-import { Analytics } from '@vercel/analytics/next';
 
 export const metadata = {
   title: 'News Archive - Global News Aggregator',
@@ -18,7 +17,6 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         {children}
-        <Analytics />
       </body>
     </html>
   );
