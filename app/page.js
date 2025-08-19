@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import AdBanner from './components/AdBanner';
 
 // 페이지 컴포넌트
 export default function HomePage() {
@@ -180,13 +179,7 @@ export default function HomePage() {
           </div>
         </header>
 
-        {/* 헤더 광고 - 최고 수익성 */}
-        <AdBanner 
-          adSlot="1234567890" 
-          className="header-ad"
-          width="728"
-          height="90"
-        />
+
 
         <div className="status-bar">
           <div className="loading-indicator">
@@ -270,15 +263,7 @@ export default function HomePage() {
               
 
               
-                                             {/* 콘텐츠 중간 광고 */}
-                {displayedNews.length >= 10 && (
-                  <AdBanner 
-                    adSlot="0987654321" 
-                    className="content-ad"
-                    width="300"
-                    height="250"
-                  />
-                )}
+                             
 
                {/* Load More Button */}
                {hasMoreNews && (
@@ -299,13 +284,7 @@ export default function HomePage() {
         </div>
       </div>
       
-                           {/* 푸터 광고 */}
-        <AdBanner 
-          adSlot="1122334455" 
-          className="footer-ad"
-          width="728"
-          height="90"
-        />
+             
       
       {/* Footer for AdSense Compliance */}
       <footer className="site-footer">

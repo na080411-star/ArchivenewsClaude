@@ -402,103 +402,7 @@ header {
   margin: 0;
 }
 
-/* Ad Banner Styles */
-.ad-banner {
-  text-align: center;
-  margin: 20px 0;
-  padding: 15px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  min-height: 22px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
 
-.ad-banner ins {
-  display: block !important;
-  width: 100%;
-  max-width: 728px;
-  margin: 0 auto;
-  height: auto !important;
-  max-height: inherit !important;
-}
-
-/* Header Ad - 최고 수익성 */
-.header-ad {
-  margin: 20px 0 30px 0;
-  height: 90px;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Content Ad - 콘텐츠 중간 */
-.content-ad {
-  margin: 30px 0;
-  height: 250px;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Footer Ad - 푸터 위 */
-.footer-ad {
-  margin: 30px 0 20px 0;
-  height: 90px;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Sidebar Ad - 데스크톱 전용 */
-.sidebar-ad {
-  position: fixed;
-  right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 160px;
-  height: 600px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-}
-
-@media (max-width: 768px) {
-  .sidebar-ad {
-    display: none;
-  }
-  
-  .ad-banner {
-    margin: 15px 0;
-    padding: 10px;
-    min-height: 50px;
-  }
-  
-  .header-ad {
-    margin: 15px 0 20px 0;
-    min-height: 50px;
-  }
-  
-  .content-ad {
-    margin: 20px 0;
-    min-height: 250px;
-  }
-  
-  .footer-ad {
-    margin: 20px 0 15px 0;
-    min-height: 50px;
-  }
-}
 
 /* 반응형 디자인 */
 @media (max-width: 768px) {
@@ -534,14 +438,7 @@ header {
         justify-content: center;
         font-size: 13px;
     }
-    .ad-banner {
-        margin: 15px 0;
-        padding: 10px;
-        min-height: 15px;
-    }
-    .ad-banner ins {
-        max-width: 320px;
-    }
+    
     .editorial-content {
         margin: 20px 15px;
         padding: 15px;
