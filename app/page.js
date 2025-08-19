@@ -85,34 +85,41 @@ export default function HomePage() {
       const newsItems = Array.isArray(data.news || data) ? (data.news || data) : [];
       const responseStats = data.stats || null;
       
-      // Sanitize news items to prevent XSS
-      const sanitizedNews = newsItems.map(item => ({
-        ...item,
-        title: item.title ? String(item.title).replace(/<[^>]*>/g, '') : '',
-        summary: item.summary ? String(item.summary).replace(/<[^>]*>/g, '') : '',
-        aiSummary: item.aiSummary ? String(item.aiSummary).replace(/<[^>]*>/g, '') : '',
-        source: item.source ? String(item.source).replace(/<[^>]*>/g, '') : '',
-        category: item.category ? String(item.category).replace(/<[^>]*>/g, '') : 'General',
-        link: item.link ? String(item.link) : '#',
-        pubDate: item.pubDate ? String(item.pubDate) : new Date().toISOString()
-      }));
+             // Sanitize news items to prevent XSS
+       const sanitizedNews = newsItems.map(item => ({
+         ...item,
+         title: item.title ? String(item.title).replace(/<[^>]*>/g, '') : '',
+         summary: item.summary ? String(item.summary).replace(/<[^>]*>/g, '') : '',
+         aiSummary: item.aiSummary ? String(item.aiSummary).replace(/<[^>]*>/g, '') : '',
+         source: item.source ? String(item.source).replace(/<[^>]*>/g, '') : '',
+         category: item.category ? String(item.category).replace(/<[^>]*>/g, '') : 'General',
+         link: item.link ? String(item.link) : '#',
+         pubDate: item.pubDate ? String(item.pubDate) : new Date().toISOString()
+       }));
+
+       // Remove duplicate articles by title (case-insensitive)
+       const uniqueNews = sanitizedNews.filter((item, index, self) => 
+         index === self.findIndex(t => 
+           t.title.toLowerCase().trim() === item.title.toLowerCase().trim()
+         )
+       );
       
-      setNewsData(sanitizedNews);
-      setStats(responseStats);
-      
-      // Apply category filter if selected
-      if (selectedCategory) {
-        const filtered = sanitizedNews.filter(item => item.category === selectedCategory);
-        setFilteredNews(filtered);
-        // Auto-refresh 시에도 displayCount를 30으로 리셋 (카테고리 필터링 시)
-        setDisplayCount(30);
-        console.log(`Category filter applied: ${selectedCategory}, filtered articles: ${filtered.length}`);
-      } else {
-        setFilteredNews(sanitizedNews);
-        // Auto-refresh 시에도 displayCount를 30으로 리셋 (전체 보기 시)
-        setDisplayCount(30);
-        console.log(`No category filter, total articles: ${sanitizedNews.length}`);
-      }
+             setNewsData(uniqueNews);
+       setStats(responseStats);
+       
+       // Apply category filter if selected
+       if (selectedCategory) {
+         const filtered = uniqueNews.filter(item => item.category === selectedCategory);
+         setFilteredNews(filtered);
+         // Auto-refresh 시에도 displayCount를 30으로 리셋 (카테고리 필터링 시)
+         setDisplayCount(30);
+         console.log(`Category filter applied: ${selectedCategory}, filtered articles: ${filtered.length}`);
+       } else {
+         setFilteredNews(uniqueNews);
+         // Auto-refresh 시에도 displayCount를 30으로 리셋 (전체 보기 시)
+         setDisplayCount(30);
+         console.log(`No category filter, total articles: ${uniqueNews.length}`);
+       }
       
       if (responseStats) {
         setStatusText(`Loaded ${responseStats.totalArticles} articles from ${responseStats.successfulSources}/${responseStats.totalSources} sources`);
