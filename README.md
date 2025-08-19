@@ -24,6 +24,10 @@ A global news aggregator that fetches news from 50+ RSS sources with AI-powered 
    ```
 4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
+## Production URL
+
+The application is live at: [https://newsarchive.live](https://newsarchive.live)
+
 ## Deployment
 
 The application is designed to work with Vercel deployment out of the box.

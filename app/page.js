@@ -17,7 +17,7 @@ export default function HomePage() {
 
   // 로컬/배포 환경에 따라 API 주소 결정
   const apiBaseUrl = process.env.NODE_ENV === 'production' 
-    ? 'https://newsarchive.net/' 
+    ? 'https://newsarchive.live/' 
     : 'http://localhost:3000';
 
   // 시간을 미국 동부 시간으로 표시하는 함수
