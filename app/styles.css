@@ -429,40 +429,22 @@ header {
 /* Header Ad - 최고 수익성 */
 .header-ad {
   margin: 20px 0 30px 0;
-  min-height: 30px !important;
-  max-height: 30px !important;
-  height: 30px !important;
-}
-
-.header-ad ins {
-  max-height: 30px !important;
-  height: 30px !important;
+  min-height: 90px;
+  text-align: center;
 }
 
 /* Content Ad - 콘텐츠 중간 */
 .content-ad {
   margin: 30px 0;
-  min-height: 83px !important;
-  max-height: 83px !important;
-  height: 83px !important;
-}
-
-.content-ad ins {
-  max-height: 83px !important;
-  height: 83px !important;
+  min-height: 250px;
+  text-align: center;
 }
 
 /* Footer Ad - 푸터 위 */
 .footer-ad {
   margin: 30px 0 20px 0;
-  min-height: 30px !important;
-  max-height: 30px !important;
-  height: 30px !important;
-}
-
-.footer-ad ins {
-  max-height: 30px !important;
-  height: 30px !important;
+  min-height: 90px;
+  text-align: center;
 }
 
 /* Sidebar Ad - 데스크톱 전용 */
@@ -490,45 +472,22 @@ header {
   .ad-banner {
     margin: 15px 0;
     padding: 10px;
-    min-height: 15px !important;
-    max-height: 15px !important;
-    height: 15px !important;
+    min-height: 50px;
   }
   
   .header-ad {
     margin: 15px 0 20px 0;
-    min-height: 20px !important;
-    max-height: 20px !important;
-    height: 20px !important;
-  }
-  
-  .header-ad ins {
-    max-height: 20px !important;
-    height: 20px !important;
+    min-height: 50px;
   }
   
   .content-ad {
     margin: 20px 0;
-    min-height: 67px !important;
-    max-height: 67px !important;
-    height: 67px !important;
-  }
-  
-  .content-ad ins {
-    max-height: 67px !important;
-    height: 67px !important;
+    min-height: 250px;
   }
   
   .footer-ad {
     margin: 20px 0 15px 0;
-    min-height: 20px !important;
-    max-height: 20px !important;
-    height: 20px !important;
-  }
-  
-  .footer-ad ins {
-    max-height: 20px !important;
-    height: 20px !important;
+    min-height: 50px;
   }
 }
 
