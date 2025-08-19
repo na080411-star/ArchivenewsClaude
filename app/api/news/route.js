@@ -3,6 +3,100 @@ import Parser from 'rss-parser';
 
 const parser = new Parser();
 
+// Translation function using LibreTranslate API (free)
+async function translateText(text, targetLang) {
+  if (!text || text.trim().length === 0) return text;
+  
+  try {
+    // Using LibreTranslate API (free, no API key required)
+    const response = await fetch('https://libretranslate.de/translate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        q: text,
+        source: 'en',
+        target: targetLang,
+        format: 'text'
+      })
+    });
+
+    if (!response.ok) {
+      console.log(`Translation failed for ${targetLang}: ${response.status}`);
+      return text; // Return original text if translation fails
+    }
+
+    const result = await response.json();
+    return result.translatedText || text;
+  } catch (error) {
+    console.log(`Translation error for ${targetLang}:`, error.message);
+    return text; // Return original text if translation fails
+  }
+}
+
+// Batch translate multiple news items
+async function translateNewsBatch(newsItems) {
+  const languages = ['ko', 'ja', 'zh'];
+  const translatedItems = [];
+  
+  // Process items in smaller batches to avoid overwhelming the translation API
+  const batchSize = 5;
+  
+  for (let i = 0; i < newsItems.length; i += batchSize) {
+    const batch = newsItems.slice(i, i + batchSize);
+    
+    // Process each item in the batch
+    const batchPromises = batch.map(async (item) => {
+      const translatedItem = { ...item };
+      
+      // Translate title and summary for all languages
+      const translationPromises = languages.map(async (lang) => {
+        const [translatedTitle, translatedSummary] = await Promise.all([
+          translateText(item.title, lang),
+          translateText(item.aiSummary, lang)
+        ]);
+        
+        return {
+          lang,
+          title: translatedTitle,
+          aiSummary: translatedSummary
+        };
+      });
+      
+      try {
+        const results = await Promise.all(translationPromises);
+        
+        // Add translated content to item
+        results.forEach(({ lang, title, aiSummary }) => {
+          translatedItem[`title_${lang}`] = title;
+          translatedItem[`aiSummary_${lang}`] = aiSummary;
+        });
+        
+        return translatedItem;
+      } catch (error) {
+        console.log(`Translation failed for item:`, error.message);
+        return item; // Return original item if translation fails
+      }
+    });
+    
+    // Wait for batch to complete
+    const batchResults = await Promise.allSettled(batchPromises);
+    batchResults.forEach(result => {
+      if (result.status === 'fulfilled') {
+        translatedItems.push(result.value);
+      }
+    });
+    
+    // Add small delay between batches to be respectful to the translation API
+    if (i + batchSize < newsItems.length) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+  }
+  
+  return translatedItems;
+}
+
 // Cache for storing news data (module-level cache)
 let newsCache = {
   data: [],
@@ -344,28 +438,43 @@ async function fetchAllNews() {
          .sort((a, b) => new Date(b.pubDate || 0) - new Date(a.pubDate || 0))
          .slice(0, 20);
 
-       sortedItems.forEach(item => {
-         if (item.title && item.link) {
-           // Store original summary and auto-generate AI summary
-           const originalSummary = item.contentSnippet || item.content || '';
-           
-                       // Auto-generate two sentence summary
+               // Process items and collect for batch translation
+        const itemsToTranslate = [];
+        
+        for (const item of sortedItems) {
+          if (item.title && item.link) {
+            // Store original summary and auto-generate AI summary
+            const originalSummary = item.contentSnippet || item.content || '';
+            
+            // Auto-generate two sentence summary
             const twoSentenceSummary = generateTwoSentenceSummary(`${item.title}. ${originalSummary}`, 300);
-           
-           // Classify article category
-           const category = classifyArticle(item.title, originalSummary);
-           
-        allNews.push({
-          title: item.title,
-          link: item.link,
-          source: source.name,
-             pubDate: item.pubDate || new Date().toISOString(),
-             summary: originalSummary,
-             aiSummary: twoSentenceSummary, // Auto-generated two sentence summary
-             category: category, // Auto-classified category
-           });
-         }
-       });
+            
+            // Classify article category
+            const category = classifyArticle(item.title, originalSummary);
+            
+            // Create base news item
+            const newsItem = {
+              title: item.title,
+              link: item.link,
+              source: source.name,
+              pubDate: item.pubDate || new Date().toISOString(),
+              summary: originalSummary,
+              aiSummary: twoSentenceSummary, // Auto-generated two sentence summary
+              category: category, // Auto-classified category
+            };
+            
+            itemsToTranslate.push(newsItem);
+          }
+        }
+        
+        // Batch translate items
+        try {
+          const translatedItems = await translateNewsBatch(itemsToTranslate);
+          allNews.push(...translatedItems);
+        } catch (error) {
+          console.log(`Batch translation failed for ${source.name}:`, error.message);
+          allNews.push(...itemsToTranslate); // Add original items if translation fails
+        }
 
              successfulSources.push(source.name);
        console.log(`✅ Successfully fetched ${sortedItems.length} items from ${source.name}`);

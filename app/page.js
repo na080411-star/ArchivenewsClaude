@@ -17,6 +17,7 @@ export default function HomePage() {
   const [autoRefresh, setAutoRefresh] = useState(true); // Auto-refresh state
   const [displayCount, setDisplayCount] = useState(30); // Display count state
   const [currentLanguage, setCurrentLanguage] = useState('en'); // Language state
+  const [translationStatus, setTranslationStatus] = useState(''); // Translation status
 
   // 로컬/배포 환경에 따라 API 주소 결정
   const apiBaseUrl = process.env.NODE_ENV === 'production' 
@@ -69,6 +70,7 @@ export default function HomePage() {
   const loadAllNews = async () => {
     const t = translations[currentLanguage];
     setStatusText(t.fetchingNews);
+    setTranslationStatus(currentLanguage !== 'en' ? t.translating : '');
     setIsRefreshing(true);
 
     try {
@@ -131,10 +133,11 @@ export default function HomePage() {
          setStatusText(`Loaded ${responseStats.totalArticles} ${t.articles} from ${responseStats.successfulSources}/${responseStats.totalSources} ${t.sources}`);
        } else {
          const t = translations[currentLanguage];
-         setStatusText(t.latestNewsReady);
-       }
+                 setStatusText(t.latestNewsReady);
+      }
       
       setLastUpdate(getEasternTimeNow());
+      setTranslationStatus(''); // Clear translation status
          } catch (error) {
        console.error('Failed to fetch from backend:', error);
        setNewsData([]);
@@ -206,10 +209,16 @@ export default function HomePage() {
 
 
                  <div className="status-bar">
-           <div className="loading-indicator">
-             <div className={`spinner ${!isRefreshing ? 'hidden' : ''}`} />
-             <span id="status-text">{statusText}</span>
-           </div>
+                       <div className="loading-indicator">
+              <div className={`spinner ${!isRefreshing ? 'hidden' : ''}`} />
+              <span id="status-text">{statusText}</span>
+              {translationStatus && (
+                <div className="translation-status">
+                  <span className="translation-icon">🌐</span>
+                  <span>{translationStatus}</span>
+                </div>
+              )}
+            </div>
            <div className="update-section">
              <div id="last-update">{t.lastUpdated} {lastUpdate}</div>
                          {stats && (
@@ -267,25 +276,35 @@ export default function HomePage() {
         <div id="news-list">
           {displayedNews.length > 0 ? (
             <>
-              {displayedNews.map((item, index) => (
-                <div key={index} className="news-item">
-                  <a href={item.link} target="_blank" rel="noopener noreferrer" className="news-link">
-                    <div className="news-title">{item.title}</div>
-                    
-                                         {/* AI Summary Display */}
+                             {displayedNews.map((item, index) => (
+                 <div key={index} className="news-item">
+                   <a href={item.link} target="_blank" rel="noopener noreferrer" className="news-link">
+                     <div className="news-title">
+                       {currentLanguage === 'en' ? item.title :
+                        currentLanguage === 'ko' ? item.title_ko :
+                        currentLanguage === 'ja' ? item.title_ja :
+                        currentLanguage === 'zh' ? item.title_zh :
+                        item.title}
+                     </div>
+                     
+                     {/* AI Summary Display */}
                      <div className="news-summary-container">
                        <div className="news-summary ai-summary">
-                         {item.aiSummary || t.aiSummaryNotAvailable}
+                         {currentLanguage === 'en' ? item.aiSummary :
+                          currentLanguage === 'ko' ? item.aiSummary_ko :
+                          currentLanguage === 'ja' ? item.aiSummary_ja :
+                          currentLanguage === 'zh' ? item.aiSummary_zh :
+                          item.aiSummary || t.aiSummaryNotAvailable}
                        </div>
                      </div>
-                    
-                                         <div className="news-meta">
+                     
+                     <div className="news-meta">
                        <span className="news-source">{item.source}</span>
                        <span className="news-time">{getRelativeTime(item.pubDate)}</span>
                      </div>
-                  </a>
-                </div>
-              ))}
+                   </a>
+                 </div>
+               ))}
               
 
               

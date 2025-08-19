@@ -9,6 +9,7 @@ export const translations = {
     preparingNews: "Preparing news feed...",
     fetchingNews: "Fetching news from 50+ sources...",
     latestNewsReady: "Latest news is ready.",
+    translating: "Translating content...",
     lastUpdated: "Last Updated:",
     sources: "sources",
     articles: "articles",
@@ -54,6 +55,7 @@ export const translations = {
     preparingNews: "뉴스 피드를 준비 중...",
     fetchingNews: "50개 이상의 소스에서 뉴스를 가져오는 중...",
     latestNewsReady: "최신 뉴스가 준비되었습니다.",
+    translating: "콘텐츠 번역 중...",
     lastUpdated: "마지막 업데이트:",
     sources: "개 소스",
     articles: "개 기사",
@@ -98,6 +100,7 @@ export const translations = {
     // Status Bar
     preparingNews: "ニュースフィードを準備中...",
     fetchingNews: "50以上のソースからニュースを取得中...",
+    translating: "コンテンツを翻訳中...",
     latestNewsReady: "最新ニュースの準備が完了しました。",
     lastUpdated: "最終更新:",
     sources: "個のソース",
@@ -143,6 +146,7 @@ export const translations = {
     // Status Bar
     preparingNews: "正在准备新闻源...",
     fetchingNews: "正在从50多个来源获取新闻...",
+    translating: "正在翻译内容...",
     latestNewsReady: "最新新闻已准备就绪。",
     lastUpdated: "最后更新:",
     sources: "个来源",
