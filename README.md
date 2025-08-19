@@ -6,7 +6,7 @@ A global news aggregator that fetches news from 50+ RSS sources with AI-powered 
 
 - 📰 **50+ News Sources**: Aggregates news from major outlets worldwide
 - 🤖 **Smart Summaries**: Intelligent 2-sentence summaries for each article
-- 📂 **Auto-Categorization**: Automatically classifies articles into categories
+
 - 🔄 **Real-time Updates**: Auto-refresh every 10 seconds
 - 📱 **Responsive Design**: Works on desktop and mobile devices
 - ⚡ **Fast Loading**: Server-side caching for optimal performance
@@ -52,16 +52,15 @@ The application is designed to work with Vercel deployment out of the box.
 
 ## News Sources
 
-The application fetches news from various categories:
-- Technology (BBC Tech, CNN Tech, Ars Technica, etc.)
-- Business (Reuters Business, Bloomberg, Forbes, etc.)
-- World News (BBC World, CNN World, The Guardian, etc.)
-- Politics, Science, Health, Sports, Entertainment
+The application fetches news from major outlets worldwide including:
+- Technology sources (BBC Tech, CNN Tech, Ars Technica, etc.)
+- Business sources (Reuters Business, Bloomberg, Forbes, etc.)
+- World News sources (BBC World, CNN World, The Guardian, etc.)
+- And many more across various topics
 
 ## Features
 
 - **Smart Summary**: Intelligent 2-sentence summaries
-- **Category Filtering**: Filter news by category
 - **Auto-refresh**: Toggle automatic updates
 - **Load More**: Progressive loading of articles
 - **Responsive Design**: Mobile-friendly interface

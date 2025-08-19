@@ -10,7 +10,6 @@ export default function HomePage() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [stats, setStats] = useState(null);
 
-  const [selectedCategory, setSelectedCategory] = useState(null);
   const [filteredNews, setFilteredNews] = useState([]);
   const [autoRefresh, setAutoRefresh] = useState(true); // Auto-refresh state
   const [displayCount, setDisplayCount] = useState(30); // Display count state
@@ -38,23 +37,7 @@ export default function HomePage() {
     return `${days} days ago`;
   };
 
-  // Category filter function
-  const handleCategoryClick = (category) => {
-    if (selectedCategory === category) {
-      // Double click - deselect category
-      setSelectedCategory(null);
-      setFilteredNews(newsData);
-      console.log(`Category deselected, showing all articles: ${newsData.length}`);
-    } else {
-      // Select new category
-      setSelectedCategory(category);
-      const filtered = newsData.filter(item => item.category === category);
-      setFilteredNews(filtered);
-      console.log(`Category selected: ${category}, filtered articles: ${filtered.length}`);
-    }
-    // Reset display count when category changes
-    setDisplayCount(30);
-  };
+
 
   // Load more articles function
   const loadMoreArticles = () => {
@@ -91,7 +74,7 @@ export default function HomePage() {
          summary: item.summary ? String(item.summary).replace(/<[^>]*>/g, '') : '',
          aiSummary: item.aiSummary ? String(item.aiSummary).replace(/<[^>]*>/g, '') : '',
          source: item.source ? String(item.source).replace(/<[^>]*>/g, '') : '',
-         category: item.category ? String(item.category).replace(/<[^>]*>/g, '') : 'General',
+         
          link: item.link ? String(item.link) : '#',
          pubDate: item.pubDate ? String(item.pubDate) : new Date().toISOString()
        }));
@@ -106,19 +89,10 @@ export default function HomePage() {
              setNewsData(uniqueNews);
        setStats(responseStats);
        
-       // Apply category filter if selected
-       if (selectedCategory) {
-         const filtered = uniqueNews.filter(item => item.category === selectedCategory);
-         setFilteredNews(filtered);
-         // Auto-refresh 시에도 displayCount를 30으로 리셋 (카테고리 필터링 시)
-         setDisplayCount(30);
-         console.log(`Category filter applied: ${selectedCategory}, filtered articles: ${filtered.length}`);
-       } else {
-         setFilteredNews(uniqueNews);
-         // Auto-refresh 시에도 displayCount를 30으로 리셋 (전체 보기 시)
-         setDisplayCount(30);
-         console.log(`No category filter, total articles: ${uniqueNews.length}`);
-       }
+               setFilteredNews(uniqueNews);
+        // Auto-refresh 시에도 displayCount를 30으로 리셋
+        setDisplayCount(30);
+        console.log(`Total articles: ${uniqueNews.length}`);
       
       if (responseStats) {
         setStatusText(`Loaded ${responseStats.totalArticles} articles from ${responseStats.successfulSources}/${responseStats.totalSources} sources`);
@@ -158,7 +132,6 @@ export default function HomePage() {
   
   // Debug logging
   console.log('Debug Info:', {
-    selectedCategory,
     totalNews: newsData.length,
     filteredNews: filteredNews.length,
     displayCount,
@@ -197,27 +170,7 @@ export default function HomePage() {
             )}
             
             
-            {/* Category Filter Buttons */}
-            {stats && stats.categoryStats && (
-              <div className="category-filters">
-                {Object.entries(stats.categoryStats)
-                  .sort(([a], [b]) => {
-                    // General을 맨 앞으로, 나머지는 알파벳 순
-                    if (a === 'General') return -1;
-                    if (b === 'General') return 1;
-                    return a.localeCompare(b);
-                  })
-                  .map(([category, count]) => (
-                    <button
-                      key={category}
-                      className={`category-btn ${selectedCategory === category ? 'active' : ''}`}
-                      onClick={() => handleCategoryClick(category)}
-                    >
-                      {category} ({count})
-                    </button>
-                  ))}
-              </div>
-            )}
+            
             
             {/* Auto-refresh toggle and refresh button */}
             <div className="refresh-controls">
