@@ -26,7 +26,7 @@ A global news aggregator that fetches news from 50+ RSS sources with AI-powered 
 
 ## Production URL
 
-The application is live at: [https://newsarchive-ruby.vercel.app](https://newsarchive-ruby.vercel.app)
+The application is live at: [https://www.newsarchive.live](https://www.newsarchive.live)
 
 ## Deployment
 
