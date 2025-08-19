@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import LanguageDetector from './components/LanguageDetector';
+import { translations } from './data/translations';
 
 // 페이지 컴포넌트
 export default function HomePage() {
@@ -14,6 +16,7 @@ export default function HomePage() {
   const [filteredNews, setFilteredNews] = useState([]);
   const [autoRefresh, setAutoRefresh] = useState(true); // Auto-refresh state
   const [displayCount, setDisplayCount] = useState(30); // Display count state
+  const [currentLanguage, setCurrentLanguage] = useState('en'); // Language state
 
   // 로컬/배포 환경에 따라 API 주소 결정
   const apiBaseUrl = process.env.NODE_ENV === 'production' 
@@ -32,10 +35,12 @@ export default function HomePage() {
     const hours = Math.floor(minutes / 60);
     const days = Math.floor(hours / 24);
 
-    if (minutes < 1) return 'just now';
-    if (minutes < 60) return `${minutes} min ago`;
-    if (hours < 24) return `${hours} hours ago`;
-    return `${days} days ago`;
+    const t = translations[currentLanguage];
+
+    if (minutes < 1) return t.justNow;
+    if (minutes < 60) return `${minutes} ${t.minAgo}`;
+    if (hours < 24) return `${hours} ${t.hoursAgo}`;
+    return `${days} ${t.daysAgo}`;
   };
 
   // Category filter function
@@ -62,7 +67,8 @@ export default function HomePage() {
   };
 
   const loadAllNews = async () => {
-    setStatusText('Fetching news from 50+ sources...');
+    const t = translations[currentLanguage];
+    setStatusText(t.fetchingNews);
     setIsRefreshing(true);
 
     try {
@@ -120,20 +126,23 @@ export default function HomePage() {
          console.log(`No category filter, total articles: ${uniqueNews.length}`);
        }
       
-      if (responseStats) {
-        setStatusText(`Loaded ${responseStats.totalArticles} articles from ${responseStats.successfulSources}/${responseStats.totalSources} sources`);
-      } else {
-        setStatusText('Latest news is ready.');
-      }
+             if (responseStats) {
+         const t = translations[currentLanguage];
+         setStatusText(`Loaded ${responseStats.totalArticles} ${t.articles} from ${responseStats.successfulSources}/${responseStats.totalSources} ${t.sources}`);
+       } else {
+         const t = translations[currentLanguage];
+         setStatusText(t.latestNewsReady);
+       }
       
       setLastUpdate(getEasternTimeNow());
-    } catch (error) {
-      console.error('Failed to fetch from backend:', error);
-      setNewsData([]);
-      setFilteredNews([]);
-      setStatusText(`Error: ${error.message}. Please check if the server is running.`);
-      setLastUpdate('Failed to update');
-    } finally {
+         } catch (error) {
+       console.error('Failed to fetch from backend:', error);
+       setNewsData([]);
+       setFilteredNews([]);
+       const t = translations[currentLanguage];
+       setStatusText(`${t.errorFetching} ${error.message}`);
+       setLastUpdate(t.failedToUpdate);
+     } finally {
       setIsRefreshing(false);
     }
   };
@@ -150,11 +159,26 @@ export default function HomePage() {
         clearInterval(interval);
       }
     };
-  }, [autoRefresh, apiBaseUrl]); // autoRefresh와 apiBaseUrl이 변경될 때마다 useEffect 재실행
+  }, [autoRefresh, apiBaseUrl, currentLanguage]); // currentLanguage 추가
 
   // Get displayed news based on current filter and display count
   const displayedNews = filteredNews.slice(0, displayCount);
   const hasMoreNews = filteredNews.length > displayCount;
+  
+  // Get current language translations
+  const t = translations[currentLanguage];
+  
+  // Update status text when language changes
+  useEffect(() => {
+    if (statusText && statusText !== 'Preparing news feed...') {
+      const currentT = translations[currentLanguage];
+      if (statusText.includes('Loaded') && stats) {
+        setStatusText(`Loaded ${stats.totalArticles} ${currentT.articles} from ${stats.successfulSources}/${stats.totalSources} ${currentT.sources}`);
+      } else if (statusText.includes('Latest news is ready')) {
+        setStatusText(currentT.latestNewsReady);
+      }
+    }
+  }, [currentLanguage, stats]);
   
   // Debug logging
   console.log('Debug Info:', {
@@ -170,31 +194,31 @@ export default function HomePage() {
     <>
 
       
-      <div className="container">
-        <header>
-          <h1 className="logo">News Archive</h1>
-          <div className="subtitle">AI-Powered News Summarizer - Instant Summaries from Major Outlets</div>
-          <div className="site-description">
-            Get instant AI-generated summaries of the latest news. Our AI analyzes and condenses articles to save you time while keeping you informed.
-          </div>
-        </header>
+             <div className="container">
+         <header>
+           <h1 className="logo">{t.logo}</h1>
+           <div className="subtitle">{t.subtitle}</div>
+           <div className="site-description">
+             {t.siteDescription}
+           </div>
+         </header>
 
 
 
-        <div className="status-bar">
-          <div className="loading-indicator">
-            <div className={`spinner ${!isRefreshing ? 'hidden' : ''}`} />
-            <span id="status-text">{statusText}</span>
-          </div>
-          <div className="update-section">
-            <div id="last-update">Last Updated: {lastUpdate}</div>
-            {stats && (
-              <div className="stats-info">
-                <span className="stats-text">
-                  📊 {stats.successfulSources}/{stats.totalSources} sources • {stats.totalArticles} articles
-                </span>
-              </div>
-            )}
+                 <div className="status-bar">
+           <div className="loading-indicator">
+             <div className={`spinner ${!isRefreshing ? 'hidden' : ''}`} />
+             <span id="status-text">{statusText}</span>
+           </div>
+           <div className="update-section">
+             <div id="last-update">{t.lastUpdated} {lastUpdate}</div>
+                         {stats && (
+               <div className="stats-info">
+                 <span className="stats-text">
+                   📊 {stats.successfulSources}/{stats.totalSources} {t.sources} • {stats.totalArticles} {t.articles}
+                 </span>
+               </div>
+             )}
             
             
             {/* Category Filter Buttons */}
@@ -219,21 +243,24 @@ export default function HomePage() {
               </div>
             )}
             
-            {/* Auto-refresh toggle and refresh button */}
-            <div className="refresh-controls">
-              <label className="auto-refresh-toggle">
-                <input
-                  type="checkbox"
-                  checked={autoRefresh}
-                  onChange={(e) => setAutoRefresh(e.target.checked)}
-                />
-                <span className="auto-refresh-text">🔄 Auto-refresh (10s)</span>
-              </label>
-              <button className="refresh-btn" onClick={loadAllNews} disabled={isRefreshing}>
-                <span className={`refresh-icon ${isRefreshing ? 'spinning' : ''}`}>🔄</span>
-                {isRefreshing ? 'Refreshing...' : 'Refresh'}
-              </button>
-            </div>
+                         {/* Language Selector */}
+             <LanguageDetector onLanguageChange={setCurrentLanguage} />
+             
+             {/* Auto-refresh toggle and refresh button */}
+             <div className="refresh-controls">
+               <label className="auto-refresh-toggle">
+                 <input
+                   type="checkbox"
+                   checked={autoRefresh}
+                   onChange={(e) => setAutoRefresh(e.target.checked)}
+                 />
+                 <span className="auto-refresh-text">{t.autoRefresh}</span>
+               </label>
+               <button className="refresh-btn" onClick={loadAllNews} disabled={isRefreshing}>
+                 <span className={`refresh-icon ${isRefreshing ? 'spinning' : ''}`}>🔄</span>
+                 {isRefreshing ? t.refreshing : t.refresh}
+               </button>
+             </div>
           </div>
         </div>
 
@@ -248,7 +275,7 @@ export default function HomePage() {
                                          {/* AI Summary Display */}
                      <div className="news-summary-container">
                        <div className="news-summary ai-summary">
-                         {item.aiSummary || "AI summary not available"}
+                         {item.aiSummary || t.aiSummaryNotAvailable}
                        </div>
                      </div>
                     
@@ -264,41 +291,41 @@ export default function HomePage() {
               
                              
 
-               {/* Load More Button */}
-               {hasMoreNews && (
-                 <div className="load-more-container">
-                   <button className="load-more-btn" onClick={loadMoreArticles}>
-                     <span className="load-more-icon">⬇</span>
-                      Load More Articles ({filteredNews.length - displayCount} remaining)
-                   </button>
-                 </div>
-               )}
+                                {/* Load More Button */}
+                 {hasMoreNews && (
+                   <div className="load-more-container">
+                     <button className="load-more-btn" onClick={loadMoreArticles}>
+                       <span className="load-more-icon">⬇</span>
+                        {t.loadMoreArticles} ({filteredNews.length - displayCount} {t.remaining})
+                     </button>
+                   </div>
+                 )}
             </>
-          ) : (
-            <div className="empty-state">
-              <div className="empty-state-icon">🌐</div>
-              <div className="empty-state-text">Fetching the latest news...</div>
-            </div>
-          )}
+                     ) : (
+             <div className="empty-state">
+               <div className="empty-state-icon">🌐</div>
+               <div className="empty-state-text">{t.fetchingLatestNews}</div>
+             </div>
+           )}
         </div>
       </div>
       
              
       
-      {/* Footer for AdSense Compliance */}
-      <footer className="site-footer">
-        <div className="footer-content">
-          <div className="footer-links">
-            <a href="/about" className="footer-link">About Us</a>
-            <a href="/privacy" className="footer-link">Privacy Policy</a>
-            <a href="/terms" className="footer-link">Terms of Service</a>
-            <a href="/contact" className="footer-link">Contact</a>
-          </div>
-          <div className="footer-info">
-                         <p>&copy; 2025 News Archive. All rights reserved. Providing AI-powered news summaries and analysis.</p>
-          </div>
-        </div>
-      </footer>
+             {/* Footer for AdSense Compliance */}
+       <footer className="site-footer">
+         <div className="footer-content">
+           <div className="footer-links">
+             <a href="/about" className="footer-link">{t.aboutUs}</a>
+             <a href="/privacy" className="footer-link">{t.privacyPolicy}</a>
+             <a href="/terms" className="footer-link">{t.termsOfService}</a>
+             <a href="/contact" className="footer-link">{t.contact}</a>
+           </div>
+           <div className="footer-info">
+                          <p>{t.copyright}</p>
+           </div>
+         </div>
+       </footer>
     </>
   );
 }
