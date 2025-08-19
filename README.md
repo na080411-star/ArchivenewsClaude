@@ -5,7 +5,7 @@ A global news aggregator that fetches news from 50+ RSS sources with AI-powered 
 ## Features
 
 - 📰 **50+ News Sources**: Aggregates news from major outlets worldwide
-- 🤖 **Smart Summaries**: AI-generated 2-sentence summaries for each article
+- 🤖 **Smart Summaries**: Intelligent 2-sentence summaries for each article
 - 📂 **Auto-Categorization**: Automatically classifies articles into categories
 - 🔄 **Real-time Updates**: Auto-refresh every 10 seconds
 - 📱 **Responsive Design**: Works on desktop and mobile devices
@@ -60,7 +60,7 @@ The application fetches news from various categories:
 
 ## Features
 
-- **Smart Summary**: AI-powered 2-sentence summaries
+- **Smart Summary**: Intelligent 2-sentence summaries
 - **Category Filtering**: Filter news by category
 - **Auto-refresh**: Toggle automatic updates
 - **Load More**: Progressive loading of articles

@@ -173,10 +173,10 @@ export default function HomePage() {
       <div className="container">
         <header>
           <h1 className="logo">News Archive</h1>
-          <div className="subtitle">AI-Powered News Summarizer - Instant Summaries from Major Outlets</div>
-          <div className="site-description">
-            Get instant AI-generated summaries of the latest news. Our AI analyzes and condenses articles to save you time while keeping you informed.
-          </div>
+          <div className="subtitle">Smart News Summarizer - Instant Summaries from Major Outlets</div>
+                      <div className="site-description">
+              Get instant smart summaries of the latest news. Our intelligent system analyzes and condenses articles to save you time while keeping you informed.
+            </div>
         </header>
 
 
@@ -247,9 +247,9 @@ export default function HomePage() {
                     
                                          {/* AI Summary Display */}
                      <div className="news-summary-container">
-                       <div className="news-summary ai-summary">
-                         {item.aiSummary || "AI summary not available"}
-                       </div>
+                                               <div className="news-summary ai-summary">
+                          {item.aiSummary || "Summary not available"}
+                        </div>
                      </div>
                     
                                          <div className="news-meta">
