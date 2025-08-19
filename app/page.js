@@ -166,7 +166,7 @@ export default function HomePage() {
       
       <div className="container">
         <header>
-          <h1 className="logo">ARCHIVE</h1>
+          <h1 className="logo">News Archive</h1>
           <div className="subtitle">AI-Powered News Summarizer - Instant Summaries from Major Outlets</div>
           <div className="site-description">
             Get instant AI-generated summaries of the latest news. Our AI analyzes and condenses articles to save you time while keeping you informed.
@@ -193,9 +193,7 @@ export default function HomePage() {
                 </span>
               </div>
             )}
-            <div className="summary-info">
-              <span className="summary-text">🤖 AI-Powered News Summaries</span>
-            </div>
+            
             
             {/* Category Filter Buttons */}
             {stats && stats.categoryStats && (
