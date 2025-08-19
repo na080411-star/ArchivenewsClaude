@@ -98,29 +98,72 @@ function generateTwoSentenceSummary(text, maxLength = 300) {
   return summary;
 }
 
-// Category Classification Function
+// Improved Category Classification Function
 function classifyArticle(title, summary) {
   const text = `${title} ${summary}`.toLowerCase();
   
-  // Category keywords
+  // Category keywords with weights (higher weight = more specific/important)
   const categories = {
-    'Technology': ['tech', 'technology', 'software', 'app', 'ai', 'artificial intelligence', 'machine learning', 'startup', 'digital', 'internet', 'web', 'mobile', 'computer', 'programming', 'coding', 'developer', 'cybersecurity', 'blockchain', 'crypto', 'bitcoin', 'ethereum', 'social media', 'facebook', 'twitter', 'google', 'apple', 'microsoft', 'amazon', 'tesla', 'spacex', 'nvidia', 'amd', 'intel', 'smartphone', 'iphone', 'android', 'gaming', 'vr', 'ar', 'virtual reality', 'augmented reality'],
-    'Business': ['business', 'economy', 'market', 'stock', 'finance', 'financial', 'investment', 'trading', 'wall street', 'nasdaq', 'dow', 's&p', 'earnings', 'revenue', 'profit', 'loss', 'ceo', 'executive', 'corporate', 'company', 'merger', 'acquisition', 'ipo', 'venture capital', 'funding', 'startup', 'entrepreneur', 'entrepreneurship', 'banking', 'bank', 'insurance', 'real estate', 'property', 'retail', 'e-commerce', 'amazon', 'walmart', 'target', 'costco'],
-    'World': ['world', 'international', 'global', 'foreign', 'diplomacy', 'diplomatic', 'embassy', 'ambassador', 'united nations', 'un', 'nato', 'european union', 'eu', 'brexit', 'china', 'russia', 'ukraine', 'middle east', 'iran', 'iraq', 'syria', 'afghanistan', 'pakistan', 'india', 'japan', 'south korea', 'north korea', 'australia', 'canada', 'mexico', 'brazil', 'argentina', 'africa', 'south africa', 'nigeria', 'egypt', 'migration', 'refugee', 'immigration'],
-    'Politics': ['politics', 'political', 'government', 'president', 'congress', 'senate', 'house', 'democrat', 'republican', 'election', 'vote', 'voting', 'campaign', 'policy', 'legislation', 'bill', 'law', 'supreme court', 'judge', 'justice', 'attorney general', 'fbi', 'cia', 'department', 'administration', 'white house', 'capitol', 'washington', 'biden', 'trump', 'clinton', 'obama'],
-    'Science': ['science', 'scientific', 'research', 'study', 'discovery', 'breakthrough', 'innovation', 'scientist', 'researcher', 'laboratory', 'lab', 'experiment', 'data', 'analysis', 'findings', 'publication', 'journal', 'peer review', 'climate', 'environment', 'environmental', 'climate change', 'global warming', 'pollution', 'conservation', 'biodiversity', 'species', 'extinction', 'renewable energy', 'solar', 'wind', 'nuclear'],
-    'Health': ['health', 'medical', 'medicine', 'doctor', 'physician', 'hospital', 'patient', 'treatment', 'therapy', 'drug', 'pharmaceutical', 'vaccine', 'vaccination', 'disease', 'illness', 'infection', 'virus', 'bacteria', 'covid', 'coronavirus', 'pandemic', 'epidemic', 'symptoms', 'diagnosis', 'prognosis', 'clinical trial', 'fda', 'who', 'centers for disease control', 'cdc', 'mental health', 'psychology', 'psychiatry'],
-    'Sports': ['sports', 'athletic', 'game', 'match', 'tournament', 'championship', 'olympics', 'world cup', 'football', 'soccer', 'basketball', 'baseball', 'tennis', 'golf', 'hockey', 'boxing', 'mma', 'ufc', 'nfl', 'nba', 'mlb', 'nhl', 'premier league', 'la liga', 'serie a', 'bundesliga', 'player', 'team', 'coach', 'manager', 'score', 'win', 'loss', 'victory', 'defeat'],
-    'Entertainment': ['entertainment', 'movie', 'film', 'tv', 'television', 'show', 'series', 'actor', 'actress', 'director', 'producer', 'hollywood', 'netflix', 'disney', 'amazon prime', 'hbo', 'streaming', 'box office', 'award', 'oscar', 'grammy', 'emmy', 'music', 'song', 'album', 'artist', 'singer', 'rapper', 'concert', 'tour', 'festival', 'celebrity', 'star', 'fame', 'red carpet']
+    'Technology': {
+      high: ['artificial intelligence', 'machine learning', 'blockchain', 'cybersecurity', 'virtual reality', 'augmented reality', 'programming', 'coding', 'developer', 'software', 'app', 'ai'],
+      medium: ['tech', 'technology', 'digital', 'internet', 'web', 'mobile', 'computer', 'smartphone', 'iphone', 'android', 'gaming', 'vr', 'ar'],
+      low: ['startup', 'social media', 'facebook', 'twitter', 'google', 'apple', 'microsoft', 'tesla', 'spacex', 'nvidia', 'amd', 'intel']
+    },
+    'Business': {
+      high: ['earnings', 'revenue', 'profit', 'loss', 'merger', 'acquisition', 'ipo', 'venture capital', 'funding', 'entrepreneur', 'entrepreneurship', 'banking', 'insurance', 'real estate'],
+      medium: ['business', 'economy', 'market', 'stock', 'finance', 'financial', 'investment', 'trading', 'wall street', 'nasdaq', 'dow', 's&p', 'ceo', 'executive', 'corporate', 'company', 'retail', 'e-commerce'],
+      low: ['walmart', 'target', 'costco']
+    },
+    'World': {
+      high: ['diplomacy', 'diplomatic', 'embassy', 'ambassador', 'united nations', 'un', 'nato', 'european union', 'eu', 'brexit', 'migration', 'refugee', 'immigration'],
+      medium: ['world', 'international', 'global', 'foreign', 'china', 'russia', 'ukraine', 'middle east', 'iran', 'iraq', 'syria', 'afghanistan', 'pakistan', 'india', 'japan', 'south korea', 'north korea', 'australia', 'canada', 'mexico', 'brazil', 'argentina', 'africa', 'south africa', 'nigeria', 'egypt']
+    },
+    'Politics': {
+      high: ['election', 'vote', 'voting', 'campaign', 'legislation', 'bill', 'law', 'supreme court', 'judge', 'justice', 'attorney general', 'fbi', 'cia', 'white house', 'capitol', 'washington'],
+      medium: ['politics', 'political', 'government', 'president', 'congress', 'senate', 'house', 'democrat', 'republican', 'policy', 'department', 'administration'],
+      low: ['biden', 'trump', 'clinton', 'obama']
+    },
+    'Science': {
+      high: ['discovery', 'breakthrough', 'innovation', 'scientist', 'researcher', 'laboratory', 'lab', 'experiment', 'publication', 'journal', 'peer review', 'climate change', 'global warming', 'biodiversity', 'species', 'extinction', 'renewable energy'],
+      medium: ['science', 'scientific', 'research', 'study', 'data', 'analysis', 'findings', 'climate', 'environment', 'environmental', 'pollution', 'conservation'],
+      low: ['solar', 'wind', 'nuclear']
+    },
+    'Health': {
+      high: ['vaccine', 'vaccination', 'disease', 'illness', 'infection', 'virus', 'bacteria', 'covid', 'coronavirus', 'pandemic', 'epidemic', 'symptoms', 'diagnosis', 'prognosis', 'clinical trial', 'fda', 'who', 'centers for disease control', 'cdc'],
+      medium: ['health', 'medical', 'medicine', 'doctor', 'physician', 'hospital', 'patient', 'treatment', 'therapy', 'drug', 'pharmaceutical', 'mental health', 'psychology', 'psychiatry']
+    },
+    'Sports': {
+      high: ['tournament', 'championship', 'olympics', 'world cup', 'nfl', 'nba', 'mlb', 'nhl', 'premier league', 'la liga', 'serie a', 'bundesliga', 'ufc', 'mma'],
+      medium: ['sports', 'athletic', 'game', 'match', 'football', 'soccer', 'basketball', 'baseball', 'tennis', 'golf', 'hockey', 'boxing', 'player', 'team', 'coach', 'manager', 'score', 'win', 'loss', 'victory', 'defeat']
+    },
+    'Entertainment': {
+      high: ['box office', 'award', 'oscar', 'grammy', 'emmy', 'red carpet', 'concert', 'tour', 'festival'],
+      medium: ['entertainment', 'movie', 'film', 'tv', 'television', 'show', 'series', 'actor', 'actress', 'director', 'producer', 'hollywood', 'netflix', 'disney', 'amazon prime', 'hbo', 'streaming', 'music', 'song', 'album', 'artist', 'singer', 'rapper', 'celebrity', 'star', 'fame']
+    }
   };
   
   let bestCategory = 'General';
   let bestScore = 0;
   
-  for (const [category, keywords] of Object.entries(categories)) {
+  for (const [category, weights] of Object.entries(categories)) {
     let score = 0;
     
-    keywords.forEach(keyword => {
+    // High weight keywords (3 points each)
+    weights.high.forEach(keyword => {
+      if (text.includes(keyword)) {
+        score += 3;
+      }
+    });
+    
+    // Medium weight keywords (2 points each)
+    weights.medium.forEach(keyword => {
+      if (text.includes(keyword)) {
+        score += 2;
+      }
+    });
+    
+    // Low weight keywords (1 point each)
+    weights.low.forEach(keyword => {
       if (text.includes(keyword)) {
         score += 1;
       }
@@ -133,7 +176,7 @@ function classifyArticle(title, summary) {
   }
   
   // If no strong category match, classify as General
-  if (bestScore < 2) {
+  if (bestScore < 3) {
     return 'General';
   }
   
