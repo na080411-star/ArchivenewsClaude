@@ -2,34 +2,34 @@
 
 import { useEffect } from 'react';
 
-const AdBanner = ({ adSlot, adClient, format = 'auto', responsive = true, style = {} }) => {
+export default function AdBanner({ 
+  adSlot, 
+  className = '', 
+  style = {},
+  format = 'auto',
+  responsive = true 
+}) {
   useEffect(() => {
-    // AdSense 스크립트가 로드되었는지 확인
-    if (window.adsbygoogle) {
-      try {
+    try {
+      // AdSense가 로드되었는지 확인
+      if (window.adsbygoogle) {
         window.adsbygoogle.push({});
-      } catch (error) {
-        console.log('AdSense error:', error);
       }
+    } catch (error) {
+      console.log('AdSense not loaded yet');
     }
   }, []);
 
   return (
-    <div className="ad-banner">
+    <div className={`ad-banner ${className}`} style={style}>
       <ins
         className="adsbygoogle"
-        style={{
-          display: 'block',
-          textAlign: 'center',
-          ...style
-        }}
-        data-ad-client={adClient}
+        style={{ display: 'block' }}
+        data-ad-client="ca-pub-1895301779178331"
         data-ad-slot={adSlot}
         data-ad-format={format}
-        data-full-width-responsive={responsive}
+        data-full-width-responsive={responsive.toString()}
       />
     </div>
   );
-};
-
-export default AdBanner;
+}

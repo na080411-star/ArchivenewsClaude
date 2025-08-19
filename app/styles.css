@@ -423,6 +423,68 @@ header {
   margin: 0 auto;
 }
 
+/* Header Ad - 최고 수익성 */
+.header-ad {
+  margin: 20px 0 30px 0;
+  min-height: 90px;
+}
+
+/* Content Ad - 콘텐츠 중간 */
+.content-ad {
+  margin: 30px 0;
+  min-height: 250px;
+}
+
+/* Footer Ad - 푸터 위 */
+.footer-ad {
+  margin: 30px 0 20px 0;
+  min-height: 90px;
+}
+
+/* Sidebar Ad - 데스크톱 전용 */
+.sidebar-ad {
+  position: fixed;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 160px;
+  height: 600px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+@media (max-width: 768px) {
+  .sidebar-ad {
+    display: none;
+  }
+  
+  .ad-banner {
+    margin: 15px 0;
+    padding: 10px;
+    min-height: 15px;
+  }
+  
+  .header-ad {
+    margin: 15px 0 20px 0;
+    min-height: 60px;
+  }
+  
+  .content-ad {
+    margin: 20px 0;
+    min-height: 200px;
+  }
+  
+  .footer-ad {
+    margin: 20px 0 15px 0;
+    min-height: 60px;
+  }
+}
+
 /* 반응형 디자인 */
 @media (max-width: 768px) {
     .logo { font-size: 2.5rem; }

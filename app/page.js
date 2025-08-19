@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import AdBanner from './components/AdBanner';
 
 // 페이지 컴포넌트
 export default function HomePage() {
@@ -172,9 +173,11 @@ export default function HomePage() {
           </div>
         </header>
 
-        
-
-        
+        {/* 헤더 광고 - 최고 수익성 */}
+        <AdBanner 
+          adSlot="1234567890" 
+          className="header-ad"
+        />
 
         <div className="status-bar">
           <div className="loading-indicator">
@@ -260,15 +263,23 @@ export default function HomePage() {
               
 
               
-              {/* Load More Button */}
-              {hasMoreNews && (
-                <div className="load-more-container">
-                  <button className="load-more-btn" onClick={loadMoreArticles}>
-                    <span className="load-more-icon">⬇</span>
-                     Load More Articles ({filteredNews.length - displayCount} remaining)
-                  </button>
-                </div>
-              )}
+                             {/* 콘텐츠 중간 광고 */}
+               {displayedNews.length >= 10 && (
+                 <AdBanner 
+                   adSlot="0987654321" 
+                   className="content-ad"
+                 />
+               )}
+
+               {/* Load More Button */}
+               {hasMoreNews && (
+                 <div className="load-more-container">
+                   <button className="load-more-btn" onClick={loadMoreArticles}>
+                     <span className="load-more-icon">⬇</span>
+                      Load More Articles ({filteredNews.length - displayCount} remaining)
+                   </button>
+                 </div>
+               )}
             </>
           ) : (
             <div className="empty-state">
@@ -278,6 +289,12 @@ export default function HomePage() {
           )}
         </div>
       </div>
+      
+             {/* 푸터 광고 */}
+       <AdBanner 
+         adSlot="1122334455" 
+         className="footer-ad"
+       />
       
       {/* Footer for AdSense Compliance */}
       <footer className="site-footer">
